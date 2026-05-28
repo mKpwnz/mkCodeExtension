@@ -73,7 +73,8 @@ Native OS title bars cannot be fully colored by a theme extension.
 Keep this README current whenever a theme, icon theme, runtime feature, setting,
 or bundled third-party source changes. Feature-level implementation belongs under
 `src/features`, shared TypeScript helpers under `src/shared`, bundled static
-assets under `assets`, and maintenance scripts under `tools`.
+assets under `assets`, and maintenance scripts under `tools`. Keep
+`CHANGELOG.md` in descending version order, with the newest release at the top.
 
 Theme workbench colors are maintained once in
 `assets/themeSources/baseWorkbenchColors.json`. Code color variants live under

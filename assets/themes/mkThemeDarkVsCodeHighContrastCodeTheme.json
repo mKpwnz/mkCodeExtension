@@ -316,10 +316,7 @@
             }
         },
         {
-            "scope": [
-                "entity.name.tag.css",
-                "entity.name.tag.less"
-            ],
+            "scope": ["entity.name.tag.css", "entity.name.tag.less"],
             "settings": {
                 "foreground": "#d7ba7d"
             }
@@ -403,9 +400,7 @@
         },
         {
             "name": "brackets of XML/HTML tags",
-            "scope": [
-                "punctuation.definition.tag"
-            ],
+            "scope": ["punctuation.definition.tag"],
             "settings": {
                 "foreground": "#808080"
             }
@@ -489,9 +484,7 @@
         },
         {
             "name": "Reset JavaScript string interpolation expression",
-            "scope": [
-                "meta.template.expression"
-            ],
+            "scope": ["meta.template.expression"],
             "settings": {
                 "foreground": "#ffffff"
             }
@@ -648,20 +641,14 @@
         },
         {
             "name": "Variable and parameter name",
-            "scope": [
-                "variable",
-                "meta.definition.variable.name",
-                "support.variable"
-            ],
+            "scope": ["variable", "meta.definition.variable.name", "support.variable"],
             "settings": {
                 "foreground": "#9CDCFE"
             }
         },
         {
             "name": "Object keys, TS grammar specific",
-            "scope": [
-                "meta.object-literal.key"
-            ],
+            "scope": ["meta.object-literal.key"],
             "settings": {
                 "foreground": "#9CDCFE"
             }
