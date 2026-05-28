@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.9
+
+- TODO: Document release changes before publishing.
+
 ## 0.1.8
 
 - Moved generated VSIX packages into the `build/` directory.
