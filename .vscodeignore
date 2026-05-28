@@ -1,7 +1,8 @@
 .cache/**
+build/**
 .vscode/**
 .gitignore
-scripts/**
+tools/**
 src/**
 tsconfig*.json
 biome.json

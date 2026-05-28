@@ -1,0 +1,9 @@
+Visual Studio Code Default Themes
+
+Source: https://github.com/microsoft/vscode
+Imported from local VS Code installation:
+- Version: 1.121.0
+- Commit: f6cfa2ea2403534de03f069bdf160d06451ed282
+
+The built-in theme-defaults extension declares MIT in its package metadata.
+Only dark code theme token colors were imported.

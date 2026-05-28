@@ -1,0 +1,7 @@
+Copilot Theme
+
+Source: https://github.com/benjaminbenais/copilot-theme
+Package license declaration: MIT
+
+The cached upstream package declares MIT in package.json. No separate LICENSE file
+was present in the upstream repository snapshot used for this import.

@@ -1,9 +1,9 @@
 {
     "name": "mk-coding-extension",
     "displayName": "mK Coding Extension",
-    "description": "A bundled mK coding experience with theme, product icons, and file icons.",
+    "description": "A bundled mK coding experience with theme, icons and more.",
     "version": "0.1.7",
-    "publisher": "mk",
+    "publisher": "mKpwnz",
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -18,6 +18,10 @@
         "icons",
         "product-icons",
         "file-icons",
+        "better-comments",
+        "error-lens",
+        "path-intellisense",
+        "commit-message",
         "mk"
     ],
     "engines": {
@@ -36,23 +40,105 @@
             {
                 "label": "mK Theme Dark",
                 "uiTheme": "vs-dark",
-                "path": "./themes/mk-theme-dark-color-theme.json"
+                "path": "./assets/themes/mkThemeDarkColorTheme.json"
+            },
+            {
+                "label": "mK Theme Dark Balanced Code",
+                "uiTheme": "vs-dark",
+                "path": "./assets/themes/mkThemeDarkBalancedCodeTheme.json"
+            },
+            {
+                "label": "mK Theme Dark Copilot Code",
+                "uiTheme": "vs-dark",
+                "path": "./assets/themes/mkThemeDarkCopilotCodeTheme.json"
+            },
+            {
+                "label": "mK Theme Dark One Dark Pro Code",
+                "uiTheme": "vs-dark",
+                "path": "./assets/themes/mkThemeDarkOneDarkProCodeTheme.json"
+            },
+            {
+                "label": "mK Theme Dark Atom One Dark Code",
+                "uiTheme": "vs-dark",
+                "path": "./assets/themes/mkThemeDarkAtomOneDarkCodeTheme.json"
+            },
+            {
+                "label": "mK Theme Dark Dracula Code",
+                "uiTheme": "vs-dark",
+                "path": "./assets/themes/mkThemeDarkDraculaCodeTheme.json"
+            },
+            {
+                "label": "mK Theme Dark VS Code 2026 Dark Code",
+                "uiTheme": "vs-dark",
+                "path": "./assets/themes/mkThemeDarkVsCode2026DarkCodeTheme.json"
+            },
+            {
+                "label": "mK Theme Dark VS Code Dark+ Code",
+                "uiTheme": "vs-dark",
+                "path": "./assets/themes/mkThemeDarkVsCodeDarkPlusCodeTheme.json"
+            },
+            {
+                "label": "mK Theme Dark VS Code Dark Modern Code",
+                "uiTheme": "vs-dark",
+                "path": "./assets/themes/mkThemeDarkVsCodeDarkModernCodeTheme.json"
+            },
+            {
+                "label": "mK Theme Dark VS Code Visual Studio Dark Code",
+                "uiTheme": "vs-dark",
+                "path": "./assets/themes/mkThemeDarkVsCodeVisualStudioDarkCodeTheme.json"
+            },
+            {
+                "label": "mK Theme Dark VS Code High Contrast Code",
+                "uiTheme": "vs-dark",
+                "path": "./assets/themes/mkThemeDarkVsCodeHighContrastCodeTheme.json"
             }
         ],
         "productIconThemes": [
             {
                 "id": "mk-product-icons",
                 "label": "mK Product Icons",
-                "path": "./product-icons/mk-product-icons.json"
+                "path": "./assets/productIcons/mkProductIcons.json"
             }
         ],
         "iconThemes": [
             {
                 "id": "mk-file-icons",
                 "label": "mK File Icons",
-                "path": "./file-icons/mk-file-icons.json"
+                "path": "./assets/fileIcons/mkFileIcons.json"
             }
         ],
+        "commands": [
+            {
+                "command": "mkErrorLens.copyProblemMessage",
+                "title": "Copy Problem Message",
+                "category": "mK Error Lens"
+            },
+            {
+                "command": "mkCommitMessageEditor.openEditor",
+                "title": "Open Commit Message Editor",
+                "category": "mK Commit Message Editor",
+                "icon": "$(edit)"
+            },
+            {
+                "command": "mkCommitMessageEditor.loadTemplate",
+                "title": "Load Commit Message Template",
+                "category": "mK Commit Message Editor"
+            },
+            {
+                "command": "mkCommitMessageEditor.copyFromScmInputBox",
+                "title": "Copy Text From SCM Input Box",
+                "category": "mK Commit Message Editor"
+            }
+        ],
+        "menus": {
+            "scm/title": [
+                {
+                    "command": "mkCommitMessageEditor.openEditor",
+                    "group": "navigation@1",
+                    "when": "scmProvider == git"
+                }
+            ]
+        },
         "configuration": [
             {
                 "type": "object",
@@ -236,21 +322,262 @@
                         "description": "Maximum number of document lines decorated per update."
                     }
                 }
+            },
+            {
+                "type": "object",
+                "title": "mK Better Comments",
+                "properties": {
+                    "mkBetterComments.enabled": {
+                        "type": "boolean",
+                        "order": 30,
+                        "default": true,
+                        "description": "Enable mK Better Comments highlighting."
+                    },
+                    "mkBetterComments.multilineComments": {
+                        "type": "boolean",
+                        "order": 31,
+                        "default": true,
+                        "description": "Highlight tags inside multiline comments."
+                    },
+                    "mkBetterComments.highlightPlainText": {
+                        "type": "boolean",
+                        "order": 32,
+                        "default": false,
+                        "description": "Highlight tags in plain text files and non-comment text."
+                    },
+                    "mkBetterComments.maxLineCount": {
+                        "type": "integer",
+                        "order": 33,
+                        "default": 20000,
+                        "minimum": 100,
+                        "maximum": 100000,
+                        "description": "Maximum number of document lines scanned for comment tags."
+                    },
+                    "mkBetterComments.tags": {
+                        "type": "array",
+                        "order": 34,
+                        "description": "Comment tags and styles used by mK Better Comments.",
+                        "default": [
+                            {
+                                "tag": "!",
+                                "color": "#ff6464",
+                                "strikethrough": false,
+                                "underline": false,
+                                "backgroundColor": "transparent",
+                                "bold": false,
+                                "italic": false
+                            },
+                            {
+                                "tag": "?",
+                                "color": "#1acafa",
+                                "strikethrough": false,
+                                "underline": false,
+                                "backgroundColor": "transparent",
+                                "bold": false,
+                                "italic": false
+                            },
+                            {
+                                "tag": "//",
+                                "color": "#6f747c",
+                                "strikethrough": true,
+                                "underline": false,
+                                "backgroundColor": "transparent",
+                                "bold": false,
+                                "italic": false
+                            },
+                            {
+                                "tag": "todo",
+                                "color": "#ffc632",
+                                "strikethrough": false,
+                                "underline": false,
+                                "backgroundColor": "transparent",
+                                "bold": false,
+                                "italic": false
+                            },
+                            {
+                                "tag": "*",
+                                "color": "#17bf6b",
+                                "strikethrough": false,
+                                "underline": false,
+                                "backgroundColor": "transparent",
+                                "bold": false,
+                                "italic": false
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "type": "object",
+                "title": "mK Error Lens",
+                "properties": {
+                    "mkErrorLens.enabled": {
+                        "type": "boolean",
+                        "order": 40,
+                        "default": true,
+                        "description": "Enable inline diagnostic highlighting."
+                    },
+                    "mkErrorLens.enabledDiagnosticLevels": {
+                        "type": "array",
+                        "order": 41,
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "error",
+                                "warning",
+                                "info",
+                                "hint"
+                            ]
+                        },
+                        "uniqueItems": true,
+                        "default": [
+                            "error",
+                            "warning",
+                            "info"
+                        ],
+                        "description": "Diagnostic severities shown inline."
+                    },
+                    "mkErrorLens.messageEnabled": {
+                        "type": "boolean",
+                        "order": 42,
+                        "default": true,
+                        "description": "Show diagnostic messages after the affected line."
+                    },
+                    "mkErrorLens.problemRangeDecorationEnabled": {
+                        "type": "boolean",
+                        "order": 43,
+                        "default": false,
+                        "description": "Highlight the diagnostic range."
+                    },
+                    "mkErrorLens.messageTemplate": {
+                        "type": "string",
+                        "order": 44,
+                        "default": "$message",
+                        "description": "Inline diagnostic template. Supports $message, $source and $code."
+                    },
+                    "mkErrorLens.messageMaxChars": {
+                        "type": "integer",
+                        "order": 45,
+                        "default": 500,
+                        "minimum": 0,
+                        "maximum": 10000,
+                        "description": "Maximum number of characters per inline diagnostic message."
+                    },
+                    "mkErrorLens.removeLinebreaks": {
+                        "type": "boolean",
+                        "order": 46,
+                        "default": true,
+                        "description": "Replace line breaks in diagnostic messages with spaces."
+                    }
+                }
+            },
+            {
+                "type": "object",
+                "title": "mK Path Intellisense",
+                "properties": {
+                    "mkPathIntellisense.extensionOnImport": {
+                        "type": "boolean",
+                        "order": 50,
+                        "default": false,
+                        "description": "Include file extensions in import completions."
+                    },
+                    "mkPathIntellisense.mappings": {
+                        "type": "object",
+                        "order": 51,
+                        "default": {
+                            "@": "${workspaceFolder}/src"
+                        },
+                        "description": "Path aliases. Values can use ${workspaceFolder}."
+                    },
+                    "mkPathIntellisense.showHiddenFiles": {
+                        "type": "boolean",
+                        "order": 52,
+                        "default": false,
+                        "description": "Show hidden files in path completions."
+                    },
+                    "mkPathIntellisense.autoSlashAfterDirectory": {
+                        "type": "boolean",
+                        "order": 53,
+                        "default": false,
+                        "description": "Insert a trailing slash after directory completions."
+                    }
+                }
+            },
+            {
+                "type": "object",
+                "title": "mK Commit Message Editor",
+                "properties": {
+                    "mkCommitMessageEditor.staticTemplate": {
+                        "type": "array",
+                        "order": 60,
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": [
+                            "feat: Short description",
+                            "",
+                            "Message body",
+                            "",
+                            "Message footer"
+                        ],
+                        "description": "Template inserted into the SCM input box."
+                    },
+                    "mkCommitMessageEditor.reduceEmptyLines": {
+                        "type": "boolean",
+                        "order": 61,
+                        "default": true,
+                        "description": "Collapse more than two consecutive empty lines."
+                    },
+                    "mkCommitMessageEditor.saveAndClose": {
+                        "type": "boolean",
+                        "order": 62,
+                        "default": false,
+                        "description": "Close the editor webview after saving to the SCM input box."
+                    }
+                }
+            },
+            {
+                "type": "object",
+                "title": "mK Explorer",
+                "properties": {
+                    "mkExplorer.indent": {
+                        "type": "integer",
+                        "order": 70,
+                        "default": 16,
+                        "minimum": 4,
+                        "maximum": 40,
+                        "description": "Explorer tree indentation in pixels. Applied to VS Code's Workbench: Tree Indent setting."
+                    },
+                    "mkExplorer.renderIndentGuides": {
+                        "type": "string",
+                        "order": 71,
+                        "default": "always",
+                        "enum": [
+                            "none",
+                            "onHover",
+                            "always"
+                        ],
+                        "description": "Explorer tree indent guide visibility. Applied to VS Code's Workbench: Tree Render Indent Guides setting."
+                    }
+                }
             }
         ]
     },
     "scripts": {
-        "build": "bunx tsc -p tsconfig.json",
-        "check": "bun run typecheck && bun run lint && bun run validate",
+        "theme:generate": "bun tools/generateThemes.ts",
+        "build": "bun run theme:generate && bunx tsc -p tsconfig.json && bunx tsc-alias -p tsconfig.json",
+        "check": "bun run typecheck && bun run typecheck:tools && bun run lint && bun run validate",
         "typecheck": "bunx tsc --noEmit -p tsconfig.json",
+        "typecheck:tools": "bunx tsc --noEmit -p tsconfig.scripts.json",
         "lint": "bunx biome check .",
         "format": "bunx biome format --write .",
-        "validate": "bun scripts/validate-extension.ts",
-        "import:elegant": "bun scripts/import-elegant-theme.ts",
-        "import:fluent": "bun scripts/import-fluent-icons.ts",
-        "import:material": "bun scripts/import-material-icons.ts",
-        "import:all": "bun run import:elegant && bun run import:fluent && bun run import:material",
-        "package": "bunx @vscode/vsce package",
+        "validate": "bun tools/validateExtension.ts",
+        "import:elegant": "bun tools/importElegantTheme.ts",
+        "import:code-themes": "bun tools/importCodeThemes.ts",
+        "import:fluent": "bun tools/importFluentIcons.ts",
+        "import:material": "bun tools/importMaterialIcons.ts",
+        "import:all": "bun run import:elegant && bun run import:code-themes && bun run theme:generate && bun run import:fluent && bun run import:material",
+        "package": "bun run theme:generate && bun tools/packageExtension.ts",
         "publish": "bunx @vscode/vsce publish"
     },
     "devDependencies": {
@@ -258,6 +585,7 @@
         "@types/node": "^24.0.0",
         "@types/vscode": "^1.90.0",
         "@vscode/vsce": "^3.6.4",
+        "tsc-alias": "^1.8.16",
         "typescript": "^5.8.3"
     }
 }
