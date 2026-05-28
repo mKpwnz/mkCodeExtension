@@ -4,6 +4,7 @@ import { readJsonFile } from "./lib/json";
 import { workspaceRoot } from "./lib/paths";
 
 type PackageJson = {
+    icon?: string;
     contributes?: {
         themes?: Array<{ label: string; path: string }>;
         productIconThemes?: Array<{ id: string; label: string; path: string }>;
@@ -34,6 +35,13 @@ const packageJson = readJsonFile(resolve(workspaceRoot, "package.json")) as Pack
 const themes = packageJson.contributes?.themes ?? [];
 const productIconThemes = packageJson.contributes?.productIconThemes ?? [];
 const iconThemes = packageJson.contributes?.iconThemes ?? [];
+
+const packageIcon = packageJson.icon;
+if (packageIcon !== "assets/extensionIcon.png") {
+    throw new Error("Missing mK extension icon.");
+}
+
+assertFile(resolveContributionPath(packageIcon));
 
 assert(
     themes.some((theme) => theme.label === "mK Theme Dark"),
