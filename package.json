@@ -1,0 +1,76 @@
+{
+    "name": "mk-coding-extension",
+    "displayName": "mK Coding Extension",
+    "description": "A bundled mK coding experience with theme, product icons, and file icons.",
+    "version": "0.1.0",
+    "publisher": "mk",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mk/mk-coding-extension.git"
+    },
+    "categories": [
+        "Themes",
+        "Other"
+    ],
+    "keywords": [
+        "theme",
+        "icons",
+        "product-icons",
+        "file-icons",
+        "mk"
+    ],
+    "engines": {
+        "vscode": "^1.90.0"
+    },
+    "extensionKind": [
+        "ui",
+        "workspace"
+    ],
+    "activationEvents": [],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "themes": [
+            {
+                "label": "mK Theme Dark",
+                "uiTheme": "vs-dark",
+                "path": "./themes/mk-theme-dark-color-theme.json"
+            }
+        ],
+        "productIconThemes": [
+            {
+                "id": "mk-product-icons",
+                "label": "mK Product Icons",
+                "path": "./product-icons/mk-product-icons.json"
+            }
+        ],
+        "iconThemes": [
+            {
+                "id": "mk-file-icons",
+                "label": "mK File Icons",
+                "path": "./file-icons/mk-file-icons.json"
+            }
+        ]
+    },
+    "scripts": {
+        "build": "bunx tsc -p tsconfig.json",
+        "check": "bun run typecheck && bun run lint && bun run validate",
+        "typecheck": "bunx tsc --noEmit -p tsconfig.json",
+        "lint": "bunx biome check .",
+        "format": "bunx biome format --write .",
+        "validate": "bun scripts/validate-extension.ts",
+        "import:elegant": "bun scripts/import-elegant-theme.ts",
+        "import:fluent": "bun scripts/import-fluent-icons.ts",
+        "import:material": "bun scripts/import-material-icons.ts",
+        "import:all": "bun run import:elegant && bun run import:fluent && bun run import:material",
+        "package": "bunx @vscode/vsce package",
+        "publish": "bunx @vscode/vsce publish"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^2.4.1",
+        "@types/node": "^24.0.0",
+        "@types/vscode": "^1.90.0",
+        "@vscode/vsce": "^3.6.4",
+        "typescript": "^5.8.3"
+    }
+}

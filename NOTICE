@@ -1,0 +1,19 @@
+mK Coding Extension
+Copyright (c) 2026 mK
+
+This product includes adapted or bundled assets from:
+
+ElegantTheme for JetBrains IDEs
+Source: https://github.com/leolin-idah/intellij-elegant-theme
+License: Apache-2.0
+The VS Code theme in this extension is an adapted derivative.
+
+Fluent Icons for Visual Studio Code
+Source: https://github.com/miguelsolorio/vscode-fluent-icons
+License: MIT
+The product icon theme is bundled under the name mK Product Icons.
+
+Material Icon Theme for Visual Studio Code
+Source: https://github.com/material-extensions/vscode-material-icon-theme
+License: MIT
+The file icon theme is bundled under the name mK File Icons.

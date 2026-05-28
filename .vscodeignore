@@ -1,0 +1,11 @@
+.cache/**
+.vscode/**
+.gitignore
+scripts/**
+src/**
+tsconfig*.json
+biome.json
+bun.lock
+node_modules/**
+*.vsix
+assets/screenshots/**
