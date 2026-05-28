@@ -98,14 +98,17 @@ assert(
     notices.includes("material-extensions/vscode-material-icon-theme"),
     "Missing Material Icon Theme notice.",
 );
+assert(notices.includes("oderwat/vscode-indent-rainbow"), "Missing Indent Rainbow notice.");
 
 const biome = readJsonFile(resolve(workspaceRoot, "biome.json")) as {
     formatter?: { indentWidth?: number };
 };
 assert(biome.formatter?.indentWidth === 4, "Biome must use 4 spaces.");
 
-const tsconfigContent = readFileSync(resolve(workspaceRoot, "tsconfig.json"), "utf8");
-assert(tsconfigContent.includes('"@/*"'), "tsconfig must include @/* alias.");
-assert(tsconfigContent.includes('"src/*"'), "tsconfig must map @/* to src/*.");
+const tsconfig = readJsonFile(resolve(workspaceRoot, "tsconfig.json")) as {
+    compilerOptions?: { paths?: Record<string, string[]> };
+};
+const srcAliasTargets = tsconfig.compilerOptions?.paths?.["@/*"] ?? [];
+assert(srcAliasTargets.includes("./src/*"), "tsconfig must map @/* to ./src/*.");
 
 console.log("Extension validation passed.");

@@ -29,3 +29,13 @@
 - Usage: bundled as `mK File Icons`.
 - Modification notice: generated static icon theme paths and labels were renamed for this
   extension. Runtime configuration commands from the upstream extension are not included.
+
+## Indent Rainbow for Visual Studio Code
+
+- Source: https://github.com/oderwat/vscode-indent-rainbow
+- Imported ref: `4c78a0c3a9be6617c96891f7a40f2ad365c845ce`
+- License: MIT
+- Local license copy: `docs/licenses/vscode-indent-rainbow-MIT.txt`
+- Usage: adapted as the `mK Indent Rainbow` runtime feature.
+- Modification notice: settings were renamed from `indentRainbow.*` to `mkIndentRainbow.*`,
+  and the runtime was refactored for this extension's TypeScript and quality rules.

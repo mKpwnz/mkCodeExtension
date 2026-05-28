@@ -2,7 +2,7 @@
     "name": "mk-coding-extension",
     "displayName": "mK Coding Extension",
     "description": "A bundled mK coding experience with theme, product icons, and file icons.",
-    "version": "0.1.0",
+    "version": "0.1.7",
     "publisher": "mk",
     "license": "MIT",
     "repository": {
@@ -27,7 +27,9 @@
         "ui",
         "workspace"
     ],
-    "activationEvents": [],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
     "main": "./dist/extension.js",
     "contributes": {
         "themes": [
@@ -49,6 +51,191 @@
                 "id": "mk-file-icons",
                 "label": "mK File Icons",
                 "path": "./file-icons/mk-file-icons.json"
+            }
+        ],
+        "configuration": [
+            {
+                "type": "object",
+                "title": "mK Theme",
+                "properties": {
+                    "mkTheme.highlightPreset": {
+                        "type": "string",
+                        "order": 1,
+                        "default": "lime",
+                        "enum": [
+                            "azure",
+                            "graphite",
+                            "silver",
+                            "green",
+                            "lime",
+                            "amber",
+                            "red",
+                            "coral",
+                            "yellow",
+                            "cyan",
+                            "violet",
+                            "magenta",
+                            "pink",
+                            "custom"
+                        ],
+                        "enumItemLabels": [
+                            "Azure (#0792f1)",
+                            "Graphite (#323239)",
+                            "Silver (#efeff1)",
+                            "Green (#17bf6b)",
+                            "Lime (#a1fb1a)",
+                            "Amber (#ffc632)",
+                            "Red (#e91916)",
+                            "Coral (#fa7342)",
+                            "Yellow (#fbd91a)",
+                            "Cyan (#1acafa)",
+                            "Violet (#8270fa)",
+                            "Magenta (#da5dfa)",
+                            "Pink (#fb477e)",
+                            "Custom"
+                        ],
+                        "enumDescriptions": [
+                            "Use #0792f1 for active UI highlights.",
+                            "Use #323239 for active UI highlights.",
+                            "Use #efeff1 for active UI highlights.",
+                            "Use #17bf6b for active UI highlights.",
+                            "Use #a1fb1a for active UI highlights.",
+                            "Use #ffc632 for active UI highlights.",
+                            "Use #e91916 for active UI highlights.",
+                            "Use #fa7342 for active UI highlights.",
+                            "Use #fbd91a for active UI highlights.",
+                            "Use #1acafa for active UI highlights.",
+                            "Use #8270fa for active UI highlights.",
+                            "Use #da5dfa for active UI highlights.",
+                            "Use #fb477e for active UI highlights.",
+                            "Use the custom hex color configured below."
+                        ],
+                        "description": "Predefined highlight color used for mK Theme Dark accents."
+                    },
+                    "mkTheme.highlightColor": {
+                        "type": "string",
+                        "order": 2,
+                        "default": "#a1fb1a",
+                        "format": "color-hex",
+                        "pattern": "^#[0-9a-fA-F]{6}$",
+                        "markdownDescription": "Custom highlight color used when `mK Theme: Highlight Preset` is `custom`. Use a six-digit hex color such as `#a1fb1a`; VS Code can show this as a color swatch in supported settings views."
+                    }
+                }
+            },
+            {
+                "type": "object",
+                "title": "mK Indent Rainbow",
+                "properties": {
+                    "mkIndentRainbow.includedLanguages": {
+                        "type": "array",
+                        "order": 10,
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": [],
+                        "description": "Languages where mK Indent Rainbow should be enabled. Empty means all languages except excluded languages."
+                    },
+                    "mkIndentRainbow.excludedLanguages": {
+                        "type": "array",
+                        "order": 11,
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": [
+                            "plaintext"
+                        ],
+                        "description": "Languages where mK Indent Rainbow should be disabled."
+                    },
+                    "mkIndentRainbow.ignoreErrorLanguages": {
+                        "type": "array",
+                        "order": 12,
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": [
+                            "markdown"
+                        ],
+                        "description": "Languages where indentation error detection is skipped. Use * to disable errors for all languages."
+                    },
+                    "mkIndentRainbow.updateDelay": {
+                        "type": "integer",
+                        "order": 13,
+                        "default": 100,
+                        "minimum": 0,
+                        "maximum": 2000,
+                        "description": "Delay in milliseconds before indentation decorations update."
+                    },
+                    "mkIndentRainbow.errorColor": {
+                        "type": "string",
+                        "order": 14,
+                        "default": "rgba(188,63,60,0.38)",
+                        "description": "Decoration color for indentation errors."
+                    },
+                    "mkIndentRainbow.tabmixColor": {
+                        "type": "string",
+                        "order": 15,
+                        "default": "rgba(214,116,185,0.32)",
+                        "description": "Decoration color for mixed tabs and spaces. Empty disables this decoration."
+                    },
+                    "mkIndentRainbow.ignoreLinePatterns": {
+                        "type": "array",
+                        "order": 16,
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": [
+                            "/[ \\t]* [*]/g",
+                            "/[ \\t]+[/]{2}/g"
+                        ],
+                        "description": "Regular expressions for lines that should skip indentation error highlighting."
+                    },
+                    "mkIndentRainbow.colors": {
+                        "type": "array",
+                        "order": 17,
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": [
+                            "rgba(73,151,250,0.08)",
+                            "rgba(18,184,162,0.08)",
+                            "rgba(224,153,45,0.08)",
+                            "rgba(134,134,209,0.08)"
+                        ],
+                        "description": "Indentation colors cycled by indent level."
+                    },
+                    "mkIndentRainbow.colorOnWhiteSpaceOnly": {
+                        "type": "boolean",
+                        "order": 18,
+                        "default": false,
+                        "description": "Only color actual whitespace when an indent segment is incomplete."
+                    },
+                    "mkIndentRainbow.indicatorStyle": {
+                        "type": "string",
+                        "order": 19,
+                        "default": "classic",
+                        "enum": [
+                            "classic",
+                            "light"
+                        ],
+                        "description": "Classic uses a subtle full indent background. Light uses a thin left border."
+                    },
+                    "mkIndentRainbow.lightIndicatorStyleLineWidth": {
+                        "type": "number",
+                        "order": 20,
+                        "default": 1,
+                        "minimum": 1,
+                        "maximum": 8,
+                        "description": "Line width for light indicator style."
+                    },
+                    "mkIndentRainbow.maxLineCount": {
+                        "type": "integer",
+                        "order": 21,
+                        "default": 20000,
+                        "minimum": 100,
+                        "maximum": 100000,
+                        "description": "Maximum number of document lines decorated per update."
+                    }
+                }
             }
         ]
     },

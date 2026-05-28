@@ -17,3 +17,8 @@ Material Icon Theme for Visual Studio Code
 Source: https://github.com/material-extensions/vscode-material-icon-theme
 License: MIT
 The file icon theme is bundled under the name mK File Icons.
+
+Indent Rainbow for Visual Studio Code
+Source: https://github.com/oderwat/vscode-indent-rainbow
+License: MIT
+The indentation highlighting feature is adapted under the mK Indent Rainbow settings namespace.
