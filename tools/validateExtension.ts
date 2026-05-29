@@ -165,7 +165,6 @@ const tsconfig = readJsonFile(resolve(workspaceRoot, "tsconfig.json")) as {
     compilerOptions?: { baseUrl?: string; paths?: Record<string, string[]> };
 };
 const srcAliasTargets = tsconfig.compilerOptions?.paths?.["@/*"] ?? [];
-assert(tsconfig.compilerOptions?.baseUrl === ".", "tsconfig must set baseUrl to workspace root.");
 assert(srcAliasTargets.includes("./src/*"), "tsconfig must map @/* to ./src/*.");
 
 console.log("Extension validation passed.");

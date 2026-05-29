@@ -2,7 +2,7 @@
     "name": "mk-coding-extension",
     "displayName": "mK Coding Extension",
     "description": "A bundled mK coding experience with theme, icons and more.",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "publisher": "mKpwnz",
     "icon": "assets/extensionIcon.png",
     "license": "MIT",
@@ -129,6 +129,12 @@
                 "command": "mkCommitMessageEditor.copyFromScmInputBox",
                 "title": "Copy Text From SCM Input Box",
                 "category": "mK Commit Message Editor"
+            },
+            {
+                "command": "mkCommitMessageEditor.generateWithCodex",
+                "title": "Generate with Codex",
+                "category": "mK Commit Message Editor",
+                "icon": "$(sparkle)"
             }
         ],
         "menus": {
@@ -137,6 +143,11 @@
                     "command": "mkCommitMessageEditor.openEditor",
                     "group": "navigation@1",
                     "when": "scmProvider == git"
+                },
+                {
+                    "command": "mkCommitMessageEditor.generateWithCodex",
+                    "group": "navigation@2",
+                    "when": "scmProvider == git && config.mkCommitMessageEditor.codexGenerationEnabled"
                 }
             ]
         },
@@ -539,6 +550,61 @@
             },
             {
                 "type": "object",
+                "title": "mK Codex Commit Message",
+                "properties": {
+                    "mkCommitMessageEditor.codexGenerationEnabled": {
+                        "type": "boolean",
+                        "order": 63,
+                        "default": true,
+                        "description": "Show commit message generation actions powered by the local Codex CLI."
+                    },
+                    "mkCommitMessageEditor.codexModel": {
+                        "type": "string",
+                        "order": 64,
+                        "default": "gpt-5.5",
+                        "description": "Model passed to the local Codex CLI when generating commit messages."
+                    },
+                    "mkCommitMessageEditor.codexReasoningEffort": {
+                        "type": "string",
+                        "order": 65,
+                        "default": "low",
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high"
+                        ],
+                        "description": "Reasoning effort passed to the local Codex CLI using model_reasoning_effort."
+                    },
+                    "mkCommitMessageEditor.codexCommand": {
+                        "type": "string",
+                        "order": 66,
+                        "default": "codex",
+                        "description": "Command or full path used to run the local Codex CLI."
+                    },
+                    "mkCommitMessageEditor.hideBuiltInGenerateButton": {
+                        "type": "boolean",
+                        "order": 67,
+                        "default": true,
+                        "description": "Disable Copilot for the SCM input language when Codex commit message generation is enabled."
+                    },
+                    "mkCommitMessageEditor.codexTimeoutSeconds": {
+                        "type": "integer",
+                        "order": 68,
+                        "default": 120,
+                        "minimum": 1,
+                        "maximum": 600,
+                        "description": "Maximum time in seconds to wait for the local Codex CLI commit message generation."
+                    },
+                    "mkCommitMessageEditor.codexPrompt": {
+                        "type": "string",
+                        "order": 69,
+                        "default": "Generate a clear Git commit message for the following diff.\nReturn only the commit message text. Do not use Markdown fences or explanations.\nUse this structure:\n1. First line: a Conventional Commit title under 72 characters that names the most important concrete change.\n2. Blank line.\n3. Body: 2-4 short dash-list items, each under 90 characters.\nEach list item must describe one concrete changed file, setting, behavior, or removed code.\nKeep the total message concise; prefer specific nouns over vague summary words.\nAvoid titles based on cleanup, formatting, updates, changes, or tweaks unless that is the primary change.\n\nDiff:\n{diff}",
+                        "markdownDescription": "Prompt template passed to the local Codex CLI. Use `{diff}` as placeholder for the staged or unstaged Git diff."
+                    }
+                }
+            },
+            {
+                "type": "object",
                 "title": "mK Explorer",
                 "properties": {
                     "mkExplorer.indent": {
@@ -568,7 +634,7 @@
         "theme:generate": "bun tools/generateThemes.ts",
         "icon:generate": "bun tools/generateExtensionIcon.ts",
         "build": "bun run theme:generate && bunx tsc -p tsconfig.json && bunx tsc-alias -p tsconfig.json",
-        "check": "bun run typecheck && bun run typecheck:tools && bun run lint && bun run validate",
+        "check": "bun run typecheck && bun run typecheck:tools && bun run format && bun run lint && bun run validate",
         "typecheck": "bunx tsc --noEmit -p tsconfig.json",
         "typecheck:tools": "bunx tsc --noEmit -p tsconfig.scripts.json",
         "lint": "bunx biome check .",
@@ -584,13 +650,15 @@
         "import:material": "bun tools/importMaterialIcons.ts",
         "import:all": "bun run import:elegant && bun run import:code-themes && bun run theme:generate && bun run import:fluent && bun run import:material",
         "package": "bun run theme:generate && bun tools/packageExtension.ts",
-        "publish": "bunx @vscode/vsce publish"
+        "publish": "bunx @vscode/vsce publish",
+        "prepare": "husky"
     },
     "devDependencies": {
         "@biomejs/biome": "^2.4.1",
         "@types/node": "^24.0.0",
         "@types/vscode": "^1.90.0",
         "@vscode/vsce": "^3.6.4",
+        "husky": "^9.1.7",
         "tsc-alias": "^1.8.16",
         "typescript": "^5.8.3"
     }
