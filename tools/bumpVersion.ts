@@ -1,4 +1,5 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type JsonValue, readJsonFile, writeJsonFile } from "./lib/json";
 import { workspaceRoot } from "./lib/paths";
@@ -19,6 +20,18 @@ type Version = {
 const validBumpKinds = new Set<string>(["patch", "minor", "major"]);
 const packageJsonPath = resolve(workspaceRoot, "package.json");
 const changelogPath = resolve(workspaceRoot, "CHANGELOG.md");
+const readmePath = resolve(workspaceRoot, "README.md");
+const upcomingChangesPath = resolve(workspaceRoot, "upcomingChanges.md");
+const versionFilePaths = [packageJsonPath, changelogPath, readmePath, upcomingChangesPath];
+const versionReferenceFilePaths = [packageJsonPath, readmePath];
+
+function git(args: string[], stdio: "ignore" | "inherit" | "pipe" = "inherit"): string {
+    return execFileSync("git", args, {
+        cwd: workspaceRoot,
+        encoding: "utf8",
+        stdio,
+    }).trim();
+}
 
 function parseVersion(version: string): Version {
     const versionMatch = /^(\d+)\.(\d+)\.(\d+)$/.exec(version);
@@ -62,17 +75,39 @@ function formatVersion(version: Version): string {
     return `${version.major}.${version.minor}.${version.patch}`;
 }
 
-function normalizeReleaseNote(note: string | undefined): string {
-    const normalizedNote = note?.trim();
+function ensureWorkingTreeIsClean(): void {
+    const status = git(["status", "--porcelain"], "pipe");
 
-    if (!normalizedNote) {
-        return "TODO: Document release changes before publishing.";
+    if (status) {
+        throw new Error("Working tree must be clean before bumping the version.");
     }
-
-    return normalizedNote.startsWith("- ") ? normalizedNote.slice(2).trim() : normalizedNote;
 }
 
-function updateChangelog(version: string, releaseNote: string): void {
+function ensureUpcomingChangesFileExists(): void {
+    if (!existsSync(upcomingChangesPath)) {
+        writeFileSync(
+            upcomingChangesPath,
+            "# Upcoming Changes\n\n- TODO: Document release changes before publishing.\n",
+            "utf8",
+        );
+    }
+}
+
+function readUpcomingChanges(): string {
+    ensureUpcomingChangesFileExists();
+
+    const upcomingChanges = readFileSync(upcomingChangesPath, "utf8")
+        .replace(/^# Upcoming Changes\s*/u, "")
+        .trim();
+
+    if (!upcomingChanges) {
+        throw new Error("upcomingChanges.md must contain release notes before bumping.");
+    }
+
+    return upcomingChanges;
+}
+
+function updateChangelog(version: string, releaseNotes: string): void {
     const changelog = readFileSync(changelogPath, "utf8");
     const versionHeading = `## ${version}`;
 
@@ -83,19 +118,86 @@ function updateChangelog(version: string, releaseNote: string): void {
     const trimmedChangelog = changelog.trimEnd();
     const nextChangelog = trimmedChangelog.replace(
         "# Changelog",
-        `# Changelog\n\n${versionHeading}\n\n- ${releaseNote}`,
+        `# Changelog\n\n${versionHeading}\n\n${releaseNotes}`,
     );
 
     writeFileSync(changelogPath, `${nextChangelog}\n`, "utf8");
 }
 
-const [bumpKindArg, ...releaseNoteParts] = process.argv.slice(2);
+function clearUpcomingChanges(): void {
+    writeFileSync(upcomingChangesPath, "# Upcoming Changes\n\n", "utf8");
+}
+
+function updateVersionReferences(currentVersion: string, nextVersion: string): void {
+    for (const filePath of versionReferenceFilePaths) {
+        if (!existsSync(filePath)) {
+            continue;
+        }
+
+        const content = readFileSync(filePath, "utf8");
+        const nextContent = content.replaceAll(currentVersion, nextVersion);
+
+        if (nextContent !== content) {
+            writeFileSync(filePath, nextContent, "utf8");
+        }
+    }
+}
+
+function fetchOriginMain(): void {
+    git(["fetch", "origin", "main", "--tags"]);
+}
+
+function checkoutOriginMain(): void {
+    git(["checkout", "--detach", "origin/main"]);
+}
+
+function createReleaseBranch(branchName: string): void {
+    git(["checkout", "-B", branchName, "origin/main"]);
+}
+
+function ensureOnlyVersionFilesChanged(): void {
+    const changedFiles = git(["diff", "--name-only", "--cached"], "pipe")
+        .split("\n")
+        .filter(Boolean);
+    const allowedFiles = new Set(
+        versionFilePaths.map((filePath) => filePath.replace(`${workspaceRoot}/`, "")),
+    );
+    const disallowedFiles = changedFiles.filter((filePath) => !allowedFiles.has(filePath));
+
+    if (disallowedFiles.length > 0) {
+        throw new Error(`Version commit contains disallowed files: ${disallowedFiles.join(", ")}`);
+    }
+}
+
+function createVersionCommitAndTag(version: string): string {
+    const tagName = `v${version}`;
+
+    git(["add", ...versionFilePaths]);
+    ensureOnlyVersionFilesChanged();
+    git(["commit", "-m", `chore: bump version to ${tagName}`]);
+    git(["tag", tagName]);
+
+    return tagName;
+}
+
+function pushReleaseBranchAndTag(branchName: string, tagName: string): void {
+    git(["push", "-u", "origin", branchName]);
+    git(["push", "origin", tagName]);
+}
+
+const [bumpKindArg] = process.argv.slice(2);
 
 if (!bumpKindArg || !validBumpKinds.has(bumpKindArg)) {
-    throw new Error("Usage: bun run version:bump <patch|minor|major> [release note]");
+    throw new Error("Usage: bun run version:bump <patch|minor|major>");
 }
 
 const bumpKind = bumpKindArg as BumpKind;
+
+ensureWorkingTreeIsClean();
+git(["rev-parse", "--is-inside-work-tree"], "ignore");
+fetchOriginMain();
+checkoutOriginMain();
+
 const packageJson = readJsonFile(packageJsonPath) as PackageJson;
 const currentVersion = packageJson.version;
 
@@ -104,12 +206,22 @@ if (!currentVersion) {
 }
 
 const nextVersion = formatVersion(bumpVersion(parseVersion(currentVersion), bumpKind));
-const releaseNote = normalizeReleaseNote(releaseNoteParts.join(" "));
+const branchName = `versionupdate/v${nextVersion}`;
+const releaseNotes = readUpcomingChanges();
 
-packageJson.version = nextVersion;
-writeJsonFile(packageJsonPath, packageJson as JsonValue);
-updateChangelog(nextVersion, releaseNote);
+createReleaseBranch(branchName);
+
+const releasePackageJson = readJsonFile(packageJsonPath) as PackageJson;
+releasePackageJson.version = nextVersion;
+writeJsonFile(packageJsonPath, releasePackageJson as JsonValue);
+updateVersionReferences(currentVersion, nextVersion);
+updateChangelog(nextVersion, releaseNotes);
+clearUpcomingChanges();
+const tagName = createVersionCommitAndTag(nextVersion);
+pushReleaseBranchAndTag(branchName, tagName);
 
 console.log(`Bumped version ${currentVersion} -> ${nextVersion}`);
-console.log(`Updated ${packageJsonPath}`);
-console.log(`Updated ${changelogPath}`);
+console.log(`Created branch ${branchName}`);
+console.log(`Committed version bump`);
+console.log(`Created git tag ${tagName}`);
+console.log(`Pushed ${branchName} and ${tagName}`);

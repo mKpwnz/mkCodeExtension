@@ -22,25 +22,62 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@main
+              with:
+                  fetch-depth: 0
 
             - name: Setup Bun
               uses: oven-sh/setup-bun@main
               with:
                   bun-version: latest
 
+            - name: Detect release tag
+              id: release
+              run: |
+                  BEFORE_SHA="${{ github.event.before }}"
+
+                  if [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
+                      RELEASE_TAG="$(git tag --merged HEAD --list 'v*.*.*' | sort -V | tail -n 1)"
+                  else
+                      RELEASE_TAG="$(git tag --merged HEAD --no-merged "$BEFORE_SHA" --list 'v*.*.*' | sort -V | tail -n 1)"
+                  fi
+
+                  if [ -z "$RELEASE_TAG" ]; then
+                      echo "No release tag became reachable on main in this push"
+                      exit 0
+                  fi
+
+                  echo "tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+
             - name: Install dependencies
+              if: steps.release.outputs.tag != ''
               run: bun install --frozen-lockfile
 
+            - name: Verify release tag matches package version
+              if: steps.release.outputs.tag != ''
+              run: |
+                  PACKAGE_VERSION="$(bun -p "require('./package.json').version")"
+                  RELEASE_TAG="${{ steps.release.outputs.tag }}"
+                  TAG_VERSION="${RELEASE_TAG#v}"
+
+                  if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+                      echo "Tag $RELEASE_TAG does not match package.json version $PACKAGE_VERSION"
+                      exit 1
+                  fi
+
             - name: Run checks
+              if: steps.release.outputs.tag != ''
               run: bun run check
 
             - name: Build extension
+              if: steps.release.outputs.tag != ''
               run: bun run build
 
             - name: Package extension
+              if: steps.release.outputs.tag != ''
               run: bun run package
 
             - name: Publish packaged VSIX
+              if: steps.release.outputs.tag != ''
               env:
                   VSCE_PAT: ${{ secrets.VSCE_PAT }}
               run: bunx @vscode/vsce publish --packagePath build/*.vsix --pat "$VSCE_PAT"
