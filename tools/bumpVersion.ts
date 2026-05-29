@@ -26,11 +26,13 @@ const versionFilePaths = [packageJsonPath, changelogPath, readmePath, upcomingCh
 const versionReferenceFilePaths = [packageJsonPath, readmePath];
 
 function git(args: string[], stdio: "ignore" | "inherit" | "pipe" = "inherit"): string {
-    return execFileSync("git", args, {
+    const output = execFileSync("git", args, {
         cwd: workspaceRoot,
         encoding: "utf8",
         stdio,
-    }).trim();
+    });
+
+    return typeof output === "string" ? output.trim() : "";
 }
 
 function parseVersion(version: string): Version {
