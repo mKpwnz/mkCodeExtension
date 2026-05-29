@@ -207,6 +207,12 @@ function createPullRequest(version: string, branchName: string, releaseNotes: st
     );
 }
 
+function checkoutAndUpdateMain(): void {
+    git(["fetch", "origin", "main"]);
+    git(["checkout", "main"]);
+    git(["pull", "--ff-only", "origin", "main"]);
+}
+
 const [bumpKindArg] = process.argv.slice(2);
 
 if (!bumpKindArg || !validBumpKinds.has(bumpKindArg)) {
@@ -242,6 +248,7 @@ clearUpcomingChanges();
 const tagName = createVersionCommitAndTag(nextVersion);
 pushReleaseBranchAndTag(branchName, tagName);
 const pullRequestUrl = createPullRequest(nextVersion, branchName, releaseNotes);
+checkoutAndUpdateMain();
 
 console.log(`Bumped version ${currentVersion} -> ${nextVersion}`);
 console.log(`Created branch ${branchName}`);
@@ -249,3 +256,4 @@ console.log(`Committed version bump`);
 console.log(`Created git tag ${tagName}`);
 console.log(`Pushed ${branchName} and ${tagName}`);
 console.log(`Created pull request ${pullRequestUrl}`);
+console.log("Checked out and updated main");
