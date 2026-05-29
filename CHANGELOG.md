@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.10
+
+- Added Codex-powered commit message generation as a separate SCM/editor action.
+- Enabled Codex commit message generation by default for fresh settings.
+- Moved Codex commit message settings into the `mK Codex Commit Message`
+  settings category while keeping existing setting keys compatible.
+- Switched extension logging to VS Code's native log output channel style.
+- Expanded the README with per-feature settings documentation, including live
+  theme accent updates and Codex commit message configuration.
+
 ## 0.1.9
 
 - TODO: Document release changes before publishing.
