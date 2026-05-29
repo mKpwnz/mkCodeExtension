@@ -180,6 +180,10 @@ bun run package
 
 Packaged `.vsix` files are written to `build/`.
 
+Version bumping requires the GitHub CLI (`gh`) to be installed and authenticated,
+because the release script pushes the version branch and creates the release pull
+request automatically.
+
 ## Third-Party Notices
 
 This extension adapts and bundles third-party theme/icon assets and adapts

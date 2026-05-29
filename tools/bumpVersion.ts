@@ -26,11 +26,23 @@ const versionFilePaths = [packageJsonPath, changelogPath, readmePath, upcomingCh
 const versionReferenceFilePaths = [packageJsonPath, readmePath];
 
 function git(args: string[], stdio: "ignore" | "inherit" | "pipe" = "inherit"): string {
-    return execFileSync("git", args, {
+    const output = execFileSync("git", args, {
         cwd: workspaceRoot,
         encoding: "utf8",
         stdio,
-    }).trim();
+    });
+
+    return typeof output === "string" ? output.trim() : "";
+}
+
+function gh(args: string[], stdio: "ignore" | "inherit" | "pipe" = "inherit"): string {
+    const output = execFileSync("gh", args, {
+        cwd: workspaceRoot,
+        encoding: "utf8",
+        stdio,
+    });
+
+    return typeof output === "string" ? output.trim() : "";
 }
 
 function parseVersion(version: string): Version {
@@ -185,6 +197,16 @@ function pushReleaseBranchAndTag(branchName: string, tagName: string): void {
     git(["push", "origin", tagName]);
 }
 
+function createPullRequest(version: string, branchName: string, releaseNotes: string): string {
+    const title = `chore: release v${version}`;
+    const body = `## Release\n\n${releaseNotes}`;
+
+    return gh(
+        ["pr", "create", "--base", "main", "--head", branchName, "--title", title, "--body", body],
+        "pipe",
+    );
+}
+
 const [bumpKindArg] = process.argv.slice(2);
 
 if (!bumpKindArg || !validBumpKinds.has(bumpKindArg)) {
@@ -219,9 +241,11 @@ updateChangelog(nextVersion, releaseNotes);
 clearUpcomingChanges();
 const tagName = createVersionCommitAndTag(nextVersion);
 pushReleaseBranchAndTag(branchName, tagName);
+const pullRequestUrl = createPullRequest(nextVersion, branchName, releaseNotes);
 
 console.log(`Bumped version ${currentVersion} -> ${nextVersion}`);
 console.log(`Created branch ${branchName}`);
 console.log(`Committed version bump`);
 console.log(`Created git tag ${tagName}`);
 console.log(`Pushed ${branchName} and ${tagName}`);
+console.log(`Created pull request ${pullRequestUrl}`);
