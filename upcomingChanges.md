@@ -1,7 +1,7 @@
 # Upcoming Changes
 
-- Changed marketplace publishing so releases are published only when a matching
-  version tag becomes reachable on `main`.
+- Changed marketplace publishing so releases are published only by `v*.*.*` tag
+  pushes with a matching `package.json` version.
 - Reworked version bumping to create a release branch from `origin/main`, update
   release files, create a version commit, tag it, and push the branch and tag.
 - Added `upcomingChanges.md` as the source for the next release notes; version
