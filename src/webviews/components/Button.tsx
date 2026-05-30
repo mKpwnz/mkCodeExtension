@@ -35,11 +35,11 @@ export function Button({
             {...props}
             className={cn(
                 `
-                    inline-flex h-[26px] min-w-[72px] cursor-pointer
+                    inline-flex h-6.5 min-w-18 cursor-pointer
                     items-center justify-center rounded-[5px]
-                    px-[11px] py-1 text-vscode-button-foreground
+                    px-2.75 py-1 text-vscode-button-foreground
                     outline-none transition-colors
-                    focus-visible:outline focus-visible:outline-1
+                    focus-visible:outline
                     focus-visible:-outline-offset-1 focus-visible:outline-accent
                     disabled:cursor-default disabled:opacity-45
                 `,

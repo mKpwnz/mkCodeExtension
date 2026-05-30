@@ -81,8 +81,8 @@ function ColorListButton({ active, color, label, onClick }: ColorListButtonProps
             type="button"
             className={
                 active
-                    ? "grid min-h-7 w-full cursor-pointer grid-cols-[18px_1fr_auto] items-center gap-2 rounded-[5px] border border-accent bg-vscode-list-active px-1.5 py-[3px] text-left text-vscode-list-active-foreground"
-                    : "grid min-h-7 w-full cursor-pointer grid-cols-[18px_1fr_auto] items-center gap-2 rounded-[5px] border border-transparent bg-transparent px-1.5 py-[3px] text-left text-vscode-list-foreground hover:bg-vscode-list-hover"
+                    ? "grid min-h-7 w-full cursor-pointer grid-cols-[18px_1fr_auto] items-center gap-2 rounded-[5px] border border-accent bg-vscode-list-active px-1.5 py-0.75 text-left text-vscode-list-active-foreground"
+                    : "grid min-h-7 w-full cursor-pointer grid-cols-[18px_1fr_auto] items-center gap-2 rounded-[5px] border border-transparent bg-transparent px-1.5 py-0.75 text-left text-vscode-list-foreground hover:bg-vscode-list-hover"
             }
             onClick={onClick}
         >

@@ -52,7 +52,7 @@ export function CommitMessageEditorRoute({ state }: CommitMessageEditorRouteProp
             />
             <div
                 aria-hidden="true"
-                className="codex-progress bg-accent-muted relative h-[3px] overflow-hidden rounded-full opacity-0 transition-opacity data-[generating=true]:opacity-100"
+                className="codex-progress bg-accent-muted relative h-0.75 overflow-hidden rounded-full opacity-0 transition-opacity data-[generating=true]:opacity-100"
                 data-generating={isGenerating}
             />
             <div className="flex flex-wrap gap-2">

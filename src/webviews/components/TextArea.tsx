@@ -15,7 +15,7 @@ export function TextArea({
                     p-3 font-vscode-editor text-vscode-input-foreground
                     leading-6 outline-none transition-colors
                     hover:border-accent
-                    focus:border-accent focus:outline focus:outline-1
+                    focus:border-accent focus:outline
                     focus:-outline-offset-1 focus:outline-accent
                     disabled:opacity-65
                 `,

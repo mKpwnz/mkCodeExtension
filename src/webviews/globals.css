@@ -52,19 +52,15 @@ body {
 }
 
 @utility range-input {
-    appearance: none;
-    @apply m-0 h-4.5 w-full bg-transparent outline-none;
-    @apply focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-accent;
+    @apply m-0 h-4.5 w-full bg-transparent outline-none focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-accent appearance-none;
 
     &::-webkit-slider-runnable-track {
         @apply h-3.5 rounded-full border border-vscode-widget-border;
     }
 
     &::-webkit-slider-thumb {
-        appearance: none;
         box-shadow: 0 0 0 1px var(--color-picker);
-        @apply -mt-[5px] h-[22px] w-[22px] rounded-full border-[3px];
-        @apply border-vscode-editor-widget bg-picker;
+        @apply -mt-1.25 h-5.5 w-5.5 rounded-full border-[3px] border-vscode-editor-widget bg-picker appearance-none;
     }
 }
 

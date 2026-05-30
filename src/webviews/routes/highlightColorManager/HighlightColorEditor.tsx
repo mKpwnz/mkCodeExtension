@@ -25,7 +25,7 @@ export function HighlightColorManagerRoute({
                 onSelectSystemColor={editor.selectSystemColor}
                 onSelectUserColor={editor.selectUserColor}
             />
-            <section className="min-h-0 overflow-y-auto p-[18px]">
+            <section className="min-h-0 overflow-y-auto p-4.5">
                 <div className="grid content-start gap-3.5">
                     <h2 className="m-0 text-xs font-semibold text-vscode-muted uppercase">
                         Color Editor
@@ -39,10 +39,8 @@ export function HighlightColorManagerRoute({
                         nameInputId="highlightColorName"
                         onChange={editor.handlePickerChange}
                     />
-                    <div className="min-h-[18px] max-w-[800px] text-vscode-error">
-                        {editor.error}
-                    </div>
-                    <div className="flex max-w-[800px] flex-wrap gap-2">
+                    <div className="min-h-4.5 max-w-200 text-vscode-error">{editor.error}</div>
+                    <div className="flex max-w-200 flex-wrap gap-2">
                         <Button
                             variant="secondary"
                             disabled={editor.error.length > 0 || editor.isSystemSelection}

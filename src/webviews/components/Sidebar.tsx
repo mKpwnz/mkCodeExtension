@@ -13,8 +13,8 @@ type SidebarSectionProps = {
 
 export function Sidebar({ children, title }: SidebarProps): ReactElement {
     return (
-        <aside className="grid min-h-0 grid-rows-[auto_1fr] border-vscode-sidebar-border border-r bg-vscode-sidebar px-2 py-[10px] max-[760px]:border-r-0 max-[760px]:border-b">
-            <div className="flex h-[30px] items-center px-0.5 pb-2">
+        <aside className="grid min-h-0 grid-rows-[auto_1fr] border-vscode-sidebar-border border-r bg-vscode-sidebar px-2 py-2.5 max-[760px]:border-r-0 max-[760px]:border-b">
+            <div className="flex h-7.5 items-center px-0.5 pb-2">
                 <h1 className="m-0 text-[13px] font-semibold">{title}</h1>
             </div>
             <div className="min-h-0 overflow-y-auto pr-1">{children}</div>
