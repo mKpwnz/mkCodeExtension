@@ -6,6 +6,7 @@ import { workspaceRoot } from "./lib/paths";
 type PackageJson = {
     icon?: string;
     contributes?: {
+        commands?: Array<{ command: string; title: string }>;
         themes?: Array<{ label: string; path: string }>;
         productIconThemes?: Array<{ id: string; label: string; path: string }>;
         iconThemes?: Array<{ id: string; label: string; path: string }>;
@@ -32,6 +33,7 @@ function resolveContributionPath(relativePath: string): string {
 }
 
 const packageJson = readJsonFile(resolve(workspaceRoot, "package.json")) as PackageJson;
+const commands = packageJson.contributes?.commands ?? [];
 const themes = packageJson.contributes?.themes ?? [];
 const productIconThemes = packageJson.contributes?.productIconThemes ?? [];
 const iconThemes = packageJson.contributes?.iconThemes ?? [];
@@ -48,41 +50,22 @@ assert(
     "Missing mK Theme Dark.",
 );
 assert(
-    themes.some((theme) => theme.label === "mK Theme Dark Copilot Code"),
-    "Missing mK Theme Dark Copilot Code.",
+    themes.some((theme) => theme.label === "mK Theme Dimmed"),
+    "Missing mK Theme Dimmed.",
 );
 assert(
-    themes.some((theme) => theme.label === "mK Theme Dark One Dark Pro Code"),
-    "Missing mK Theme Dark One Dark Pro Code.",
+    themes.some((theme) => theme.label === "mK Theme Light"),
+    "Missing mK Theme Light.",
 );
+assert(themes.length === 3, "Expected three mK workspace themes.");
 assert(
-    themes.some((theme) => theme.label === "mK Theme Dark Atom One Dark Code"),
-    "Missing mK Theme Dark Atom One Dark Code.",
+    commands.some((command) => command.command === "mkTheme.selectCodeTheme"),
+    "Missing mK code theme selection command.",
 );
-assert(
-    themes.some((theme) => theme.label === "mK Theme Dark Dracula Code"),
-    "Missing mK Theme Dark Dracula Code.",
-);
-assert(
-    themes.some((theme) => theme.label === "mK Theme Dark VS Code 2026 Dark Code"),
-    "Missing mK Theme Dark VS Code 2026 Dark Code.",
-);
-assert(
-    themes.some((theme) => theme.label === "mK Theme Dark VS Code Dark+ Code"),
-    "Missing mK Theme Dark VS Code Dark+ Code.",
-);
-assert(
-    themes.some((theme) => theme.label === "mK Theme Dark VS Code Dark Modern Code"),
-    "Missing mK Theme Dark VS Code Dark Modern Code.",
-);
-assert(
-    themes.some((theme) => theme.label === "mK Theme Dark VS Code Visual Studio Dark Code"),
-    "Missing mK Theme Dark VS Code Visual Studio Dark Code.",
-);
-assert(
-    themes.some((theme) => theme.label === "mK Theme Dark VS Code High Contrast Code"),
-    "Missing mK Theme Dark VS Code High Contrast Code.",
-);
+assertFile(resolve(workspaceRoot, "assets", "themeSources", "codeVariants", "mkCodeDark.json"));
+assertFile(resolve(workspaceRoot, "assets", "themeSources", "codeVariants", "mkCodeDimmed.json"));
+assertFile(resolve(workspaceRoot, "assets", "themeSources", "codeVariants", "mkCodeLight.json"));
+assertFile(resolve(workspaceRoot, "assets", "themeSources", "codeVariants", "balanced.json"));
 assert(
     productIconThemes.some((theme) => theme.id === "mk-product-icons"),
     "Missing mK Product Icons.",

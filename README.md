@@ -1,52 +1,82 @@
 # mK Coding Extension
 
-A bundled VS Code coding experience with an mK theme, icon themes, and editor
-quality-of-life features.
+A bundled VS Code coding experience with mK workspace themes, independent code
+color themes, icon themes, and editor quality-of-life features.
 
-## Included
+## Features
 
-### Themes
+### Workspace Themes and Code Themes
 
-- `mK Theme Dark`: a dark VS Code workbench and code theme based on ElegantTheme,
-  with ElegantTheme used only as the code color source. The workbench UI is a
-  custom mK base for neutral surfaces, menus, tabs, status and title bars,
-  settings views, and configurable highlight accents.
-- Code color variants: all other `mK Theme Dark ... Code` themes reuse the same
-  mK workbench UI and only swap editor code colors. Variants are available for
-  Balanced, Copilot, One Dark Pro, Atom One Dark, Dracula, VS Code 2026 Dark,
-  Dark+, Dark Modern, Visual Studio Dark, and High Contrast.
-- `mK Product Icons`: product icon theme derived from Fluent Icons and bundled
-  under the mK name.
-- `mK File Icons`: file icon theme derived from Material Icon Theme and bundled
-  under the mK name.
+The extension separates the workbench from editor code colors.
 
-### Features
+Workspace themes control VS Code's UI: activity bar, side bar, tabs, panels,
+menus, inputs, status bar, terminal surfaces, and accent highlights. Included
+workspace themes are:
+
+- `mK Theme Dark`: the default dark mK workspace theme.
+- `mK Theme Dimmed`: the same mK theme language with a slightly brighter dark
+  workspace.
+- `mK Theme Light`: a light mK workspace theme with the same structure and accent
+  behavior.
+
+Code themes control editor token colors and can be changed independently from
+the workspace theme. Use `mK Theme: Select Code Theme` to live-preview and select
+code colors without switching the VS Code color theme itself.
+
+Built-in code variants include `mK Code Dark`, `mK Code Dimmed`, `mK Code
+Light`, Balanced, Copilot, One Dark Pro, Atom One Dark, Dracula, VS Code 2026
+Dark, Dark+, Dark Modern, Visual Studio Dark, and High Contrast.
+
+### Import Code Themes from Marketplace
+
+`mK Theme: Import Code Theme from Marketplace` can import code colors from any VS
+Code Marketplace theme extension. Paste a Marketplace URL, `publisher.extension`
+id, or local `.vsix` path. If the extension contributes multiple themes, a
+multi-select picker lets you choose one or more to import.
+
+Imported code themes are stored in VS Code global extension storage, so they
+survive extension updates. They appear in `mK Theme: Select Code Theme` under
+`User Themes` and can be removed with `mK Theme: Delete User Code Themes`.
+
+### Accent Color
+
+`mkTheme.highlightPreset` and `mkTheme.highlightColor` update mK workspace
+accents live. The accent is applied to all mK workspace themes.
+
+### Icons
+
+- `mK Product Icons`: product icon theme derived from Fluent Icons.
+- `mK File Icons`: file icon theme derived from Material Icon Theme.
+
+### Editor Tools
 
 - `mK Indent Rainbow`: runtime indentation highlighting adapted from Indent
-  Rainbow. This is an editor feature, not a VS Code theme contribution.
+  Rainbow.
 - `mK Better Comments`: comment tag highlighting adapted from Better Comments.
 - `mK Error Lens`: inline diagnostic highlighting adapted from Error Lens.
-- `mK Path Intellisense`: path completion for imports and file references adapted
-  from Path Intellisense.
+- `mK Path Intellisense`: path completion for imports and file references
+  adapted from Path Intellisense.
+- `mK Explorer Layout`: wider Explorer tree indentation and visible indent
+  guides.
+
+### Commit Message Tools
+
 - `mK Commit Message Editor`: compact Git commit message editor inspired by
   Commit Message Editor.
-- `mK Codex Commit Message`: optional Codex-powered Git commit message
-  generation exposed as a separate SCM action and editor button.
-- `mK Explorer Layout`: wider Explorer tree indentation and visible indent guides.
-- Configurable mK highlight accent through `mkTheme.highlightPreset` and
-  `mkTheme.highlightColor`.
+- `mK Codex Commit Message`: optional Codex-powered Git commit message generation
+  exposed as a separate SCM action and editor button.
 
 ## Usage
 
-Open the command palette and select:
+Open the command palette and use:
 
-- `Preferences: Color Theme` -> `mK Theme Dark`
+- `Preferences: Color Theme` -> `mK Theme Dark`, `mK Theme Dimmed`, or
+  `mK Theme Light`
+- `mK Theme: Select Code Theme`
+- `mK Theme: Import Code Theme from Marketplace`
+- `mK Theme: Delete User Code Themes`
 - `Preferences: Product Icon Theme` -> `mK Product Icons`
 - `Preferences: File Icon Theme` -> `mK File Icons`
-
-`mK Indent Rainbow` and the additional runtime features activate automatically
-after startup. The Codex commit message action appears as a separate SCM button
-when Codex generation is enabled.
 
 For full title bar theming, set VS Code's `Window: Title Bar Style` to `custom`.
 Native OS title bars cannot be fully colored by a theme extension.
@@ -57,12 +87,12 @@ Settings are grouped by feature in VS Code's Settings UI.
 
 ### mK Theme
 
-- `mkTheme.highlightPreset`: predefined highlight accent used by the mK
-  workbench theme. Changing this setting updates supported workbench accents
-  live.
+- `mkTheme.highlightPreset`: predefined highlight accent used by mK workspace
+  themes.
 - `mkTheme.highlightColor`: custom six-digit hex color used when
-  `mkTheme.highlightPreset` is `custom`. VS Code shows this as a color setting in
-  supported settings views.
+  `mkTheme.highlightPreset` is `custom`.
+- `mkTheme.codeTheme`: code color variant applied live to all mK workspace themes
+  through editor token customization overrides.
 
 ### mK Indent Rainbow
 
@@ -132,8 +162,7 @@ Settings are grouped by feature in VS Code's Settings UI.
 ### mK Codex Commit Message
 
 - `mkCommitMessageEditor.codexGenerationEnabled`: show Codex commit message
-  generation actions. Enabled by default because it is exposed as a separate
-  action.
+  generation actions.
 - `mkCommitMessageEditor.codexModel`: model passed to the local Codex CLI.
 - `mkCommitMessageEditor.codexReasoningEffort`: reasoning effort passed to the
   Codex CLI using `model_reasoning_effort`.
@@ -151,22 +180,34 @@ Settings are grouped by feature in VS Code's Settings UI.
 - `mkExplorer.indent`: Explorer tree indentation in pixels.
 - `mkExplorer.renderIndentGuides`: Explorer tree indent guide visibility.
 
+## Technical Details
+
+Workspace themes are static VS Code color theme contributions under
+`assets/themes`. Built-in code variants live under
+`assets/themeSources/codeVariants` and are applied at runtime through:
+
+- `editor.tokenColorCustomizations`
+- `editor.semanticTokenColorCustomizations`
+
+Imported user code themes are stored in this extension's VS Code global storage
+directory under `codeThemes`. They are intentionally not stored in the extension
+install directory, so extension updates do not remove them.
+
+Marketplace imports download or read a VSIX, parse JSON/JSONC theme files,
+resolve theme `include` chains, and store only `tokenColors` and
+`semanticTokenColors`. Workbench colors from imported themes are ignored so the
+mK workspace theme stays consistent.
+
 ## Maintenance
 
 Keep this README current whenever a theme, icon theme, runtime feature, setting,
 or bundled third-party source changes. Feature-level implementation belongs under
 `src/features`, shared TypeScript helpers under `src/shared`, bundled static
-assets under `assets`, and maintenance scripts under `tools`. Keep
-`upcomingChanges.md` current during normal feature work. Version bumps move those
-notes into `CHANGELOG.md`, which stays in descending version order with the
-newest release at the top.
+assets under `assets`, and maintenance scripts under `tools`.
 
-Theme workbench colors are maintained once in
-`assets/themeSources/baseWorkbenchColors.json`. Code color variants live under
-`assets/themeSources/codeVariants`. Run `bun run theme:generate` after changing
-theme sources so every generated theme receives the shared UI base. Upstream code
-theme imports must only write code variants and must not change
-`baseWorkbenchColors.json`.
+Keep `upcomingChanges.md` current during normal feature work. Version bumps move
+those notes into `CHANGELOG.md`, which stays in descending version order with the
+newest release at the top.
 
 ## Development
 

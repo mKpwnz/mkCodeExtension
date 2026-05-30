@@ -1,5 +1,6 @@
 import type { ExtensionContext } from "vscode";
 import { activateBetterComments } from "@/features/betterComments/betterCommentsFeature";
+import { activateCodeTheme } from "@/features/codeTheme/codeThemeFeature";
 import { activateCommitMessageEditor } from "@/features/commitMessageEditor/commitMessageEditorFeature";
 import { activateErrorLens, deactivateErrorLens } from "@/features/errorLens/errorLensFeature";
 import { activateExplorerLayout } from "@/features/explorerLayout/explorerLayoutFeature";
@@ -12,6 +13,7 @@ export function activate(context: ExtensionContext): void {
     logExtensionStartup(context);
     activateIndentRainbow(context);
     activateThemeAccent(context);
+    activateCodeTheme(context);
     activateBetterComments(context);
     activateErrorLens(context);
     activatePathIntellisense(context);

@@ -1,6 +1,5 @@
 {
     "label": "mK Theme Dark Atom One Dark Code",
-    "outputPath": "mkThemeDarkAtomOneDarkCodeTheme.json",
     "tokenColors": [
         {
             "name": "Comment",

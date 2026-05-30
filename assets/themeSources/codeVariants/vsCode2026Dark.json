@@ -1,6 +1,5 @@
 {
     "label": "mK Theme Dark VS Code 2026 Dark Code",
-    "outputPath": "mkThemeDarkVsCode2026DarkCodeTheme.json",
     "tokenColors": [
         {
             "scope": [

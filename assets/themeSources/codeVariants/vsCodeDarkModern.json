@@ -1,6 +1,5 @@
 {
     "label": "mK Theme Dark VS Code Dark Modern Code",
-    "outputPath": "mkThemeDarkVsCodeDarkModernCodeTheme.json",
     "tokenColors": [
         {
             "scope": [

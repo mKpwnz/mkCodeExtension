@@ -55,13 +55,13 @@ export async function generateCodexCommitMessage(
         workspacePath,
         "-o",
         outputPath,
-        prompt,
     ];
 
     try {
         const processOutput = await runCodexProcess(
             configuration,
             args,
+            prompt,
             workspacePath,
             cancellationToken,
         );
@@ -166,13 +166,14 @@ function cleanCommitMessage(value: string): string {
 function runCodexProcess(
     configuration: CommitMessageConfiguration,
     args: readonly string[],
+    prompt: string,
     workspacePath: string,
     cancellationToken: vscode.CancellationToken,
 ): Promise<ProcessOutput> {
     return new Promise((resolve, reject) => {
         const child = spawn(configuration.codexCommand, [...args], {
             cwd: workspacePath,
-            stdio: ["ignore", "pipe", "pipe"],
+            stdio: ["pipe", "pipe", "pipe"],
             windowsHide: true,
         });
         let stdoutLength = 0;
@@ -202,6 +203,19 @@ function runCodexProcess(
             clearTimeout(timeout);
             logExtensionWarn(featureName, "Codex process was cancelled and terminated.");
         });
+
+        child.stdin.on("error", (error) => {
+            if (settled) {
+                return;
+            }
+
+            settled = true;
+            clearTimeout(timeout);
+            cancellation.dispose();
+            logExtensionError(featureName, `Failed to write Codex prompt: ${error.message}`);
+            reject(error);
+        });
+        child.stdin.end(prompt);
 
         child.stdout.on("data", (chunk: Buffer) => {
             stdoutLength += chunk.length;
