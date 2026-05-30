@@ -1,7 +1,7 @@
 # Upcoming Changes
 
-- Fixed Marketplace publishing so main merges only publish when `package.json`
-  changes to a version with a matching reachable release tag.
+- Fixed Marketplace publishing so normal main merges no longer start the publish
+  workflow approval unless `package.json` changes to a matching tagged version.
 - Split workspace and code colors so `mK Theme Dark`, `mK Theme Dimmed`, and
   `mK Theme Light` can share independently selectable code themes.
 - Added `mK Theme: Select Code Theme` and `mkTheme.codeTheme` for live code color
