@@ -1,2 +1,2 @@
 bun run check
-git add .
+git update-index --again

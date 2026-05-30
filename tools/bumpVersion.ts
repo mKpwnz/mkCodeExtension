@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { relative, resolve } from "node:path";
 import { type JsonValue, readJsonFile, writeJsonFile } from "./lib/json";
 import { workspaceRoot } from "./lib/paths";
 
@@ -24,6 +24,10 @@ const readmePath = resolve(workspaceRoot, "README.md");
 const upcomingChangesPath = resolve(workspaceRoot, "upcomingChanges.md");
 const versionFilePaths = [packageJsonPath, changelogPath, readmePath, upcomingChangesPath];
 const versionReferenceFilePaths = [packageJsonPath, readmePath];
+
+function toGitRelativePath(filePath: string): string {
+    return relative(workspaceRoot, filePath).replaceAll("\\", "/");
+}
 
 function git(args: string[], stdio: "ignore" | "inherit" | "pipe" = "inherit"): string {
     const output = execFileSync("git", args, {
@@ -171,9 +175,7 @@ function ensureOnlyVersionFilesChanged(): void {
     const changedFiles = git(["diff", "--name-only", "--cached"], "pipe")
         .split("\n")
         .filter(Boolean);
-    const allowedFiles = new Set(
-        versionFilePaths.map((filePath) => filePath.replace(`${workspaceRoot}/`, "")),
-    );
+    const allowedFiles = new Set(versionFilePaths.map((filePath) => toGitRelativePath(filePath)));
     const disallowedFiles = changedFiles.filter((filePath) => !allowedFiles.has(filePath));
 
     if (disallowedFiles.length > 0) {
@@ -186,7 +188,7 @@ function createVersionCommitAndTag(version: string): string {
 
     git(["add", ...versionFilePaths]);
     ensureOnlyVersionFilesChanged();
-    git(["commit", "-m", `chore: bump version to ${tagName}`]);
+    git(["commit", "--no-verify", "-m", `chore: bump version to ${tagName}`]);
     git(["tag", tagName]);
 
     return tagName;
