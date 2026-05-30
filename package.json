@@ -76,6 +76,24 @@
                 "icon": "$(symbol-color)"
             },
             {
+                "command": "mkTheme.selectHighlightColor",
+                "title": "Select Highlight Color",
+                "category": "mK Theme",
+                "icon": "$(symbol-color)"
+            },
+            {
+                "command": "mkTheme.manageCustomHighlightColors",
+                "title": "Manage Custom Highlight Colors",
+                "category": "mK Theme",
+                "icon": "$(paintcan)"
+            },
+            {
+                "command": "mkTheme.deleteUserHighlightColors",
+                "title": "Delete User Highlight Colors",
+                "category": "mK Theme",
+                "icon": "$(trash)"
+            },
+            {
                 "command": "mkTheme.importCodeThemeFromMarketplace",
                 "title": "Import Code Theme from Marketplace",
                 "category": "mK Theme",
@@ -314,7 +332,7 @@
                         "order": 21,
                         "default": 20000,
                         "minimum": 100,
-                        "maximum": 100000,
+                        "maximum": 1e5,
                         "description": "Maximum number of document lines decorated per update."
                     }
                 }
@@ -346,7 +364,7 @@
                         "order": 33,
                         "default": 20000,
                         "minimum": 100,
-                        "maximum": 100000,
+                        "maximum": 1e5,
                         "description": "Maximum number of document lines scanned for comment tags."
                     },
                     "mkBetterComments.tags": {
@@ -456,7 +474,7 @@
                         "order": 45,
                         "default": 500,
                         "minimum": 0,
-                        "maximum": 10000,
+                        "maximum": 1e4,
                         "description": "Maximum number of characters per inline diagnostic message."
                     },
                     "mkErrorLens.removeLinebreaks": {
@@ -616,10 +634,12 @@
     },
     "scripts": {
         "icon:generate": "bun tools/generateExtensionIcon.ts",
-        "build": "bunx tsc -p tsconfig.json && bunx tsc-alias -p tsconfig.json",
-        "check": "bun run typecheck && bun run typecheck:tools && bun run format && bun run lint && bun run validate",
+        "build": "bun run webviews:build && bunx tsc -p tsconfig.json && bunx tsc-alias -p tsconfig.json",
+        "check": "bun run typecheck && bun run typecheck:webviews && bun run typecheck:tools && bun run format && bun run lint && bun run validate",
         "typecheck": "bunx tsc --noEmit -p tsconfig.json",
+        "typecheck:webviews": "bunx tsc --noEmit -p src/webviews/tsconfig.json",
         "typecheck:tools": "bunx tsc --noEmit -p tsconfig.scripts.json",
+        "webviews:build": "bun tools/buildWebviews.ts",
         "lint": "bunx biome check .",
         "format": "bunx biome format --write .",
         "validate": "bun tools/validateExtension.ts",
@@ -638,11 +658,20 @@
     },
     "devDependencies": {
         "@biomejs/biome": "^2.4.1",
+        "@tailwindcss/cli": "^4.3.0",
         "@types/node": "^24.0.0",
+        "@types/react": "^19.2.15",
+        "@types/react-dom": "^19.2.3",
         "@types/vscode": "^1.90.0",
         "@vscode/vsce": "^3.6.4",
+        "esbuild": "^0.28.0",
         "husky": "^9.1.7",
+        "tailwindcss": "^4.3.0",
         "tsc-alias": "^1.8.16",
         "typescript": "^5.8.3"
+    },
+    "dependencies": {
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6"
     }
 }

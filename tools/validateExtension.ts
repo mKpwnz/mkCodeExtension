@@ -66,6 +66,8 @@ assertFile(resolve(workspaceRoot, "assets", "themeSources", "codeVariants", "mkC
 assertFile(resolve(workspaceRoot, "assets", "themeSources", "codeVariants", "mkCodeDimmed.json"));
 assertFile(resolve(workspaceRoot, "assets", "themeSources", "codeVariants", "mkCodeLight.json"));
 assertFile(resolve(workspaceRoot, "assets", "themeSources", "codeVariants", "balanced.json"));
+assertFile(resolve(workspaceRoot, "assets", "webviews", "webviewApp.css"));
+assertFile(resolve(workspaceRoot, "assets", "webviews", "webviewApp.js"));
 assert(
     productIconThemes.some((theme) => theme.id === "mk-product-icons"),
     "Missing mK Product Icons.",
