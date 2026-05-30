@@ -1,6 +1,5 @@
 {
     "label": "mK Theme Dark One Dark Pro Code",
-    "outputPath": "mkThemeDarkOneDarkProCodeTheme.json",
     "tokenColors": [
         {
             "scope": "meta.embedded",

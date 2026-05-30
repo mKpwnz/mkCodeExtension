@@ -1,6 +1,5 @@
 {
     "label": "mK Theme Dark Dracula Code",
-    "outputPath": "mkThemeDarkDraculaCodeTheme.json",
     "tokenColors": [
         {
             "scope": ["emphasis"],

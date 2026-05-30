@@ -1,6 +1,5 @@
 {
     "label": "mK Theme Dark Copilot Code",
-    "outputPath": "mkThemeDarkCopilotCodeTheme.json",
     "tokenColors": [
         {
             "name": "New keyword, logical operator keyword",

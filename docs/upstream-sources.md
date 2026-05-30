@@ -2,7 +2,7 @@
 
 | Component | Source | Ref | Local Output |
 | --- | --- | --- | --- |
-| ElegantTheme | `https://github.com/leolin-idah/intellij-elegant-theme` | `af2c56a27047af98b9225e19485e4a01ae7fcf19` | `assets/themeSources/codeVariants/elegant.json` |
+| ElegantTheme | `https://github.com/leolin-idah/intellij-elegant-theme` | `af2c56a27047af98b9225e19485e4a01ae7fcf19` | `assets/themeSources/codeVariants/mkCodeDark.json`, `assets/themeSources/codeVariants/mkCodeDimmed.json`, `assets/themeSources/codeVariants/mkCodeLight.json` |
 | Copilot Theme | `https://github.com/benjaminbenais/copilot-theme` | `2852220c241c9035a5e46988950bd40ab60ef447` | `assets/themeSources/codeVariants/copilot.json` |
 | One Dark Pro | `https://github.com/Binaryify/OneDark-Pro` | `6305452802975b158e34dfe634de02153bdcc34a` | `assets/themeSources/codeVariants/oneDarkPro.json` |
 | Atom One Dark | `https://github.com/akamud/vscode-theme-onedark` | `a8be970644982221f9b61fb1c4b3da74b4beab79` | `assets/themeSources/codeVariants/atomOneDark.json` |

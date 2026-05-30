@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { mkWorkspaceThemeIds } from "@/features/theme/colorTheme";
 import { buildAccentColors } from "@/features/themeAccent/accentColors";
 import {
     accentColorKey,
@@ -8,8 +9,6 @@ import {
 } from "@/features/themeAccent/accentPresets";
 import { defaultHighlightColor } from "@/shared/color";
 
-const themeName = "mK Theme Dark";
-
 export async function applyConfiguredAccentColor(): Promise<void> {
     const accentColor = getConfiguredAccentColor();
     const configuration = vscode.workspace.getConfiguration();
@@ -17,15 +16,14 @@ export async function applyConfiguredAccentColor(): Promise<void> {
         "workbench.colorCustomizations",
         {},
     );
-    const themeCustomizations = getThemeCustomizations(currentCustomizations);
-    const nextThemeCustomizations = {
-        ...themeCustomizations,
-        ...buildAccentColors(accentColor),
-    };
-    const nextCustomizations = {
-        ...currentCustomizations,
-        [`[${themeName}]`]: nextThemeCustomizations,
-    };
+    const nextCustomizations = { ...currentCustomizations };
+
+    for (const themeName of mkWorkspaceThemeIds) {
+        nextCustomizations[`[${themeName}]`] = {
+            ...getThemeCustomizations(currentCustomizations, themeName),
+            ...buildAccentColors(accentColor),
+        };
+    }
 
     if (JSON.stringify(currentCustomizations) === JSON.stringify(nextCustomizations)) {
         return;
@@ -46,7 +44,10 @@ function getConfiguredAccentColor(): string {
     return resolveAccentColor(preset, customColor);
 }
 
-function getThemeCustomizations(customizations: Record<string, unknown>): Record<string, string> {
+function getThemeCustomizations(
+    customizations: Record<string, unknown>,
+    themeName: string,
+): Record<string, string> {
     const themeValue = customizations[`[${themeName}]`];
 
     if (!themeValue || typeof themeValue !== "object" || Array.isArray(themeValue)) {

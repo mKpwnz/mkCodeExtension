@@ -1,17 +1,11 @@
 import { existsSync, readdirSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { type JsonValue, readJsonFile, writeJsonFile } from "./lib/json";
+import { join, resolve } from "node:path";
+import { type JsonValue, writeJsonFile } from "./lib/json";
 import { assertPathExists, upstreamRoot, workspaceRoot } from "./lib/paths";
-
-type UpstreamTheme = {
-    include?: string;
-    tokenColors?: JsonValue[];
-    semanticTokenColors?: Record<string, JsonValue>;
-};
+import { readThemeWithIncludes } from "./lib/themeExtraction";
 
 type CodeThemeImport = {
     label: string;
-    outputPath: string;
     sourcePath: string;
     targetFileName: string;
 };
@@ -62,7 +56,6 @@ function resolveDefaultThemePath(fileName: string): string {
 const imports: CodeThemeImport[] = [
     {
         label: "mK Theme Dark Copilot Code",
-        outputPath: "mkThemeDarkCopilotCodeTheme.json",
         sourcePath: resolve(
             upstreamRoot,
             "copilot-theme",
@@ -73,49 +66,41 @@ const imports: CodeThemeImport[] = [
     },
     {
         label: "mK Theme Dark One Dark Pro Code",
-        outputPath: "mkThemeDarkOneDarkProCodeTheme.json",
         sourcePath: resolve(upstreamRoot, "OneDark-Pro", "themes", "OneDark-Pro.json"),
         targetFileName: "oneDarkPro.json",
     },
     {
         label: "mK Theme Dark Atom One Dark Code",
-        outputPath: "mkThemeDarkAtomOneDarkCodeTheme.json",
         sourcePath: resolve(upstreamRoot, "vscode-theme-onedark", "themes", "OneDark.json"),
         targetFileName: "atomOneDark.json",
     },
     {
         label: "mK Theme Dark Dracula Code",
-        outputPath: "mkThemeDarkDraculaCodeTheme.json",
         sourcePath: resolve(upstreamRoot, "dracula-visual-studio-code", "theme", "dracula.json"),
         targetFileName: "dracula.json",
     },
     {
         label: "mK Theme Dark VS Code 2026 Dark Code",
-        outputPath: "mkThemeDarkVsCode2026DarkCodeTheme.json",
         sourcePath: resolveDefaultThemePath("2026-dark.json"),
         targetFileName: "vsCode2026Dark.json",
     },
     {
         label: "mK Theme Dark VS Code Dark+ Code",
-        outputPath: "mkThemeDarkVsCodeDarkPlusCodeTheme.json",
         sourcePath: resolveDefaultThemePath("dark_plus.json"),
         targetFileName: "vsCodeDarkPlus.json",
     },
     {
         label: "mK Theme Dark VS Code Dark Modern Code",
-        outputPath: "mkThemeDarkVsCodeDarkModernCodeTheme.json",
         sourcePath: resolveDefaultThemePath("dark_modern.json"),
         targetFileName: "vsCodeDarkModern.json",
     },
     {
         label: "mK Theme Dark VS Code Visual Studio Dark Code",
-        outputPath: "mkThemeDarkVsCodeVisualStudioDarkCodeTheme.json",
         sourcePath: resolveDefaultThemePath("dark_vs.json"),
         targetFileName: "vsCodeVisualStudioDark.json",
     },
     {
         label: "mK Theme Dark VS Code High Contrast Code",
-        outputPath: "mkThemeDarkVsCodeHighContrastCodeTheme.json",
         sourcePath: resolveDefaultThemePath("hc_black.json"),
         targetFileName: "vsCodeHighContrast.json",
     },
@@ -134,32 +119,8 @@ function readCodeTheme(themeImport: CodeThemeImport): JsonValue {
 
     return {
         label: themeImport.label,
-        outputPath: themeImport.outputPath,
         tokenColors,
         semanticTokenColors,
-    };
-}
-
-function readThemeWithIncludes(themePath: string, depth: number): UpstreamTheme {
-    if (depth > 8) {
-        throw new Error(`Theme include depth exceeded for ${themePath}`);
-    }
-
-    const theme = readJsonFile(themePath) as UpstreamTheme;
-
-    if (!theme.include) {
-        return theme;
-    }
-
-    const includedPath = resolve(dirname(themePath), theme.include);
-    const includedTheme = readThemeWithIncludes(includedPath, depth + 1);
-
-    return {
-        tokenColors: [...(includedTheme.tokenColors ?? []), ...(theme.tokenColors ?? [])],
-        semanticTokenColors: {
-            ...(includedTheme.semanticTokenColors ?? {}),
-            ...(theme.semanticTokenColors ?? {}),
-        },
     };
 }
 

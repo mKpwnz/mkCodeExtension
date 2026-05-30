@@ -6,10 +6,13 @@
 - Imported ref: `af2c56a27047af98b9225e19485e4a01ae7fcf19`
 - License: Apache-2.0
 - Local license copy: `docs/licenses/elegant-theme-APACHE-2.0.txt`
-- Usage: used only as a code color source for `mK Theme Dark`.
+- Usage: code color source for `mK Code Dark`, `mK Code Dimmed`, and
+  `mK Code Light`.
 - Modification notice: JetBrains editor scheme values were mapped to VS Code
-  TextMate token colors and semantic token colors. Workbench colors are no longer
-  imported from ElegantTheme; all mK themes share the custom mK workbench base.
+  TextMate token colors and semantic token colors. `mK Code Dimmed` and
+  `mK Code Light` adapt those mapped code colors for the matching mK workspace
+  brightness. Workbench colors are no longer imported from ElegantTheme; all mK
+  themes share the custom mK workbench base.
 
 ## Copilot Theme for Visual Studio Code
 

@@ -44,54 +44,14 @@
                 "path": "./assets/themes/mkThemeDarkColorTheme.json"
             },
             {
-                "label": "mK Theme Dark Balanced Code",
+                "label": "mK Theme Dimmed",
                 "uiTheme": "vs-dark",
-                "path": "./assets/themes/mkThemeDarkBalancedCodeTheme.json"
+                "path": "./assets/themes/mkThemeDimmedColorTheme.json"
             },
             {
-                "label": "mK Theme Dark Copilot Code",
-                "uiTheme": "vs-dark",
-                "path": "./assets/themes/mkThemeDarkCopilotCodeTheme.json"
-            },
-            {
-                "label": "mK Theme Dark One Dark Pro Code",
-                "uiTheme": "vs-dark",
-                "path": "./assets/themes/mkThemeDarkOneDarkProCodeTheme.json"
-            },
-            {
-                "label": "mK Theme Dark Atom One Dark Code",
-                "uiTheme": "vs-dark",
-                "path": "./assets/themes/mkThemeDarkAtomOneDarkCodeTheme.json"
-            },
-            {
-                "label": "mK Theme Dark Dracula Code",
-                "uiTheme": "vs-dark",
-                "path": "./assets/themes/mkThemeDarkDraculaCodeTheme.json"
-            },
-            {
-                "label": "mK Theme Dark VS Code 2026 Dark Code",
-                "uiTheme": "vs-dark",
-                "path": "./assets/themes/mkThemeDarkVsCode2026DarkCodeTheme.json"
-            },
-            {
-                "label": "mK Theme Dark VS Code Dark+ Code",
-                "uiTheme": "vs-dark",
-                "path": "./assets/themes/mkThemeDarkVsCodeDarkPlusCodeTheme.json"
-            },
-            {
-                "label": "mK Theme Dark VS Code Dark Modern Code",
-                "uiTheme": "vs-dark",
-                "path": "./assets/themes/mkThemeDarkVsCodeDarkModernCodeTheme.json"
-            },
-            {
-                "label": "mK Theme Dark VS Code Visual Studio Dark Code",
-                "uiTheme": "vs-dark",
-                "path": "./assets/themes/mkThemeDarkVsCodeVisualStudioDarkCodeTheme.json"
-            },
-            {
-                "label": "mK Theme Dark VS Code High Contrast Code",
-                "uiTheme": "vs-dark",
-                "path": "./assets/themes/mkThemeDarkVsCodeHighContrastCodeTheme.json"
+                "label": "mK Theme Light",
+                "uiTheme": "vs",
+                "path": "./assets/themes/mkThemeLightColorTheme.json"
             }
         ],
         "productIconThemes": [
@@ -109,6 +69,24 @@
             }
         ],
         "commands": [
+            {
+                "command": "mkTheme.selectCodeTheme",
+                "title": "Select Code Theme",
+                "category": "mK Theme",
+                "icon": "$(symbol-color)"
+            },
+            {
+                "command": "mkTheme.importCodeThemeFromMarketplace",
+                "title": "Import Code Theme from Marketplace",
+                "category": "mK Theme",
+                "icon": "$(cloud-download)"
+            },
+            {
+                "command": "mkTheme.deleteUserCodeThemes",
+                "title": "Delete User Code Themes",
+                "category": "mK Theme",
+                "icon": "$(trash)"
+            },
             {
                 "command": "mkErrorLens.copyProblemMessage",
                 "title": "Copy Problem Message",
@@ -208,7 +186,7 @@
                             "Use #fb477e for active UI highlights.",
                             "Use the custom hex color configured below."
                         ],
-                        "description": "Predefined highlight color used for mK Theme Dark accents."
+                        "description": "Predefined highlight color used for mK workspace theme accents."
                     },
                     "mkTheme.highlightColor": {
                         "type": "string",
@@ -217,6 +195,12 @@
                         "format": "color-hex",
                         "pattern": "^#[0-9a-fA-F]{6}$",
                         "markdownDescription": "Custom highlight color used when `mK Theme: Highlight Preset` is `custom`. Use a six-digit hex color such as `#a1fb1a`; VS Code can show this as a color swatch in supported settings views."
+                    },
+                    "mkTheme.codeTheme": {
+                        "type": "string",
+                        "order": 3,
+                        "default": "mkCodeDark",
+                        "markdownDescription": "Code color variant applied live to mK workspace themes through editor token customization overrides. Use `mK Theme: Select Code Theme` to pick from built-in and imported user variants."
                     }
                 }
             },
@@ -631,9 +615,8 @@
         ]
     },
     "scripts": {
-        "theme:generate": "bun tools/generateThemes.ts",
         "icon:generate": "bun tools/generateExtensionIcon.ts",
-        "build": "bun run theme:generate && bunx tsc -p tsconfig.json && bunx tsc-alias -p tsconfig.json",
+        "build": "bunx tsc -p tsconfig.json && bunx tsc-alias -p tsconfig.json",
         "check": "bun run typecheck && bun run typecheck:tools && bun run format && bun run lint && bun run validate",
         "typecheck": "bunx tsc --noEmit -p tsconfig.json",
         "typecheck:tools": "bunx tsc --noEmit -p tsconfig.scripts.json",
@@ -644,12 +627,12 @@
         "version:patch": "bun tools/bumpVersion.ts patch",
         "version:minor": "bun tools/bumpVersion.ts minor",
         "version:major": "bun tools/bumpVersion.ts major",
-        "import:elegant": "bun tools/importElegantTheme.ts",
         "import:code-themes": "bun tools/importCodeThemes.ts",
+        "import:marketplace-code-theme": "bun tools/importMarketplaceCodeTheme.ts",
         "import:fluent": "bun tools/importFluentIcons.ts",
         "import:material": "bun tools/importMaterialIcons.ts",
-        "import:all": "bun run import:elegant && bun run import:code-themes && bun run theme:generate && bun run import:fluent && bun run import:material",
-        "package": "bun run theme:generate && bun tools/packageExtension.ts",
+        "import:all": "bun run import:code-themes && bun run import:fluent && bun run import:material",
+        "package": "bun tools/packageExtension.ts",
         "publish": "bunx @vscode/vsce publish",
         "prepare": "husky"
     },
