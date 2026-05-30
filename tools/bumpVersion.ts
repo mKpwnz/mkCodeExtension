@@ -99,6 +99,32 @@ function ensureWorkingTreeIsClean(): void {
     }
 }
 
+function ensureGitHubCliIsAvailable(): void {
+    try {
+        gh(["--version"], "ignore");
+    } catch {
+        throw new Error(
+            "GitHub CLI `gh` must be installed and available in PATH before bumping the version.",
+        );
+    }
+}
+
+function ensureGitHubCliIsAuthenticated(): void {
+    try {
+        gh(["auth", "status"], "ignore");
+    } catch {
+        throw new Error("GitHub CLI `gh` must be authenticated before bumping the version.");
+    }
+}
+
+function ensureGitHubRepositoryIsReachable(): void {
+    try {
+        gh(["repo", "view"], "ignore");
+    } catch {
+        throw new Error("GitHub CLI `gh` must be able to access this repository.");
+    }
+}
+
 function ensureUpcomingChangesFileExists(): void {
     if (!existsSync(upcomingChangesPath)) {
         writeFileSync(
@@ -225,6 +251,9 @@ const bumpKind = bumpKindArg as BumpKind;
 
 ensureWorkingTreeIsClean();
 git(["rev-parse", "--is-inside-work-tree"], "ignore");
+ensureGitHubCliIsAvailable();
+ensureGitHubCliIsAuthenticated();
+ensureGitHubRepositoryIsReachable();
 fetchOriginMain();
 checkoutOriginMain();
 
