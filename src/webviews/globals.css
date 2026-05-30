@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+@source "./**/*.{ts,tsx}";
+
+:root {
+    --accent: var(--vscode-focusBorder);
+    --picker-color: var(--vscode-focusBorder);
+    --picker-r: 161;
+    --picker-g: 251;
+    --picker-b: 26;
+}
+
+@theme inline {
+    --color-accent: var(--accent);
+    --color-picker: var(--picker-color);
+    --color-vscode-button: var(--vscode-button-background);
+    --color-vscode-button-border: var(--vscode-button-border, transparent);
+    --color-vscode-button-foreground: var(--vscode-button-foreground);
+    --color-vscode-button-hover: var(--vscode-button-hoverBackground);
+    --color-vscode-button-secondary: var(--vscode-button-secondaryBackground);
+    --color-vscode-button-secondary-foreground: var(--vscode-button-secondaryForeground);
+    --color-vscode-button-secondary-hover: var(--vscode-button-secondaryHoverBackground);
+    --color-vscode-editor: var(--vscode-editor-background);
+    --color-vscode-editor-widget: var(--vscode-editorWidget-background);
+    --color-vscode-error: var(--vscode-errorForeground);
+    --color-vscode-focus: var(--vscode-focusBorder);
+    --color-vscode-foreground: var(--vscode-foreground);
+    --color-vscode-input: var(--vscode-input-background);
+    --color-vscode-input-border: var(--vscode-input-border);
+    --color-vscode-input-foreground: var(--vscode-input-foreground);
+    --color-vscode-list-active: var(--vscode-list-activeSelectionBackground);
+    --color-vscode-list-active-foreground: var(--vscode-list-activeSelectionForeground);
+    --color-vscode-list-foreground: var(--vscode-list-foreground);
+    --color-vscode-list-hover: var(--vscode-list-hoverBackground);
+    --color-vscode-list-inactive: var(--vscode-list-inactiveSelectionBackground);
+    --color-vscode-muted: var(--vscode-descriptionForeground);
+    --color-vscode-sidebar: var(--vscode-sideBar-background);
+    --color-vscode-sidebar-border: var(--vscode-sideBarSectionHeader-border);
+    --color-vscode-widget-border: var(--vscode-widget-border);
+    --font-vscode: var(--vscode-font-family);
+    --font-vscode-editor: var(--vscode-editor-font-family);
+    --text-vscode: var(--vscode-font-size);
+    --text-vscode-editor: var(--vscode-editor-font-size);
+}
+
+body {
+    @apply m-0 bg-vscode-editor p-0 text-vscode text-vscode-foreground font-vscode;
+}
+
+@utility bg-accent-muted {
+    background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+@utility range-input {
+    @apply m-0 h-4.5 w-full bg-transparent outline-none focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-accent appearance-none;
+
+    &::-webkit-slider-runnable-track {
+        @apply h-3.5 rounded-full border border-vscode-widget-border;
+    }
+
+    &::-webkit-slider-thumb {
+        box-shadow: 0 0 0 1px var(--color-picker);
+        @apply -mt-1.25 h-5.5 w-5.5 rounded-full border-[3px] border-vscode-editor-widget bg-picker appearance-none;
+    }
+}
+
+@utility range-red {
+    &::-webkit-slider-runnable-track {
+        background: linear-gradient(
+            90deg,
+            rgb(0, var(--picker-g), var(--picker-b)),
+            rgb(255, var(--picker-g), var(--picker-b))
+        );
+    }
+}
+
+@utility range-green {
+    &::-webkit-slider-runnable-track {
+        background: linear-gradient(
+            90deg,
+            rgb(var(--picker-r), 0, var(--picker-b)),
+            rgb(var(--picker-r), 255, var(--picker-b))
+        );
+    }
+}
+
+@utility range-blue {
+    &::-webkit-slider-runnable-track {
+        background: linear-gradient(
+            90deg,
+            rgb(var(--picker-r), var(--picker-g), 0),
+            rgb(var(--picker-r), var(--picker-g), 255)
+        );
+    }
+}
+
+@utility codex-progress {
+    &::before {
+        content: "";
+        inset-block: 0;
+        left: -35%;
+        width: 35%;
+        background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+        @apply absolute rounded-[inherit];
+    }
+
+    &[data-generating="true"]::before {
+        animation: mk-progress-sweep 1.15s linear infinite;
+    }
+}
+
+@keyframes mk-progress-sweep {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(390%);
+    }
+}

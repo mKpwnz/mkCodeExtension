@@ -7,12 +7,6 @@ import {
     reduceEmptyLines,
 } from "@/features/commitMessageEditor/commitMessageWebview";
 import { readGitCommitMessage, writeGitCommitMessage } from "@/features/commitMessageEditor/gitScm";
-import {
-    accentColorKey,
-    accentPresetKey,
-    accentSettingSection,
-    resolveAccentColor,
-} from "@/features/themeAccent/accentPresets";
 import { logExtensionError, showExtensionOutput } from "@/shared/extensionLogger";
 
 const featureName = "Commit Message Editor";
@@ -22,7 +16,9 @@ export function activateCommitMessageEditor(context: vscode.ExtensionContext): v
     syncBuiltInCommitMessageGeneration();
 
     context.subscriptions.push(
-        vscode.commands.registerCommand("mkCommitMessageEditor.openEditor", () => openEditor()),
+        vscode.commands.registerCommand("mkCommitMessageEditor.openEditor", () =>
+            openEditor(context),
+        ),
         vscode.commands.registerCommand("mkCommitMessageEditor.loadTemplate", () => loadTemplate()),
         vscode.commands.registerCommand("mkCommitMessageEditor.copyFromScmInputBox", () =>
             copyFromScmInputBox(),
@@ -38,7 +34,7 @@ export function activateCommitMessageEditor(context: vscode.ExtensionContext): v
     );
 }
 
-async function openEditor(): Promise<void> {
+async function openEditor(context: vscode.ExtensionContext): Promise<void> {
     const currentMessage = await readGitCommitMessage();
     const configuration = readCommitMessageConfiguration();
     const initialMessage =
@@ -47,13 +43,18 @@ async function openEditor(): Promise<void> {
         "mkCommitMessageEditor",
         "mK Commit Message Editor",
         vscode.ViewColumn.Active,
-        { enableScripts: true },
+        {
+            enableScripts: true,
+            retainContextWhenHidden: true,
+            localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, "assets", "webviews")],
+        },
     );
 
     panel.webview.html = getCommitMessageWebviewContent(
+        context.extensionUri,
+        panel.webview,
         initialMessage,
         configuration.codexGenerationEnabled,
-        readAccentColor(),
     );
     openPanels.add(panel);
     panel.onDidDispose(() => {
@@ -189,12 +190,4 @@ async function disableCopilotForScmInput(): Promise<void> {
         },
         vscode.ConfigurationTarget.Global,
     );
-}
-
-function readAccentColor(): string {
-    const configuration = vscode.workspace.getConfiguration(accentSettingSection);
-    const preset = configuration.get<string>(accentPresetKey, "lime");
-    const customColor = configuration.get<string>(accentColorKey, "#a1fb1a");
-
-    return resolveAccentColor(preset, customColor);
 }

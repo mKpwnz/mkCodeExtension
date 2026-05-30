@@ -11,6 +11,11 @@ import { defaultHighlightColor } from "@/shared/color";
 
 export async function applyConfiguredAccentColor(): Promise<void> {
     const accentColor = getConfiguredAccentColor();
+
+    await applyAccentColor(accentColor);
+}
+
+export async function applyAccentColor(accentColor: string): Promise<void> {
     const configuration = vscode.workspace.getConfiguration();
     const currentCustomizations = configuration.get<Record<string, unknown>>(
         "workbench.colorCustomizations",

@@ -43,6 +43,13 @@ survive extension updates. They appear in `mK Theme: Select Code Theme` under
 `mkTheme.highlightPreset` and `mkTheme.highlightColor` update mK workspace
 accents live. The accent is applied to all mK workspace themes.
 
+Use `mK Theme: Select Highlight Color` to choose built-in extension highlight
+colors or saved user highlight colors with live preview. Use `mK Theme: Manage
+Custom Highlight Colors` to open the color manager, add or edit user highlight
+colors with a hex/RGB color picker, apply system colors, rename saved colors, or
+delete saved colors. User highlight colors are stored in VS Code global
+extension storage and remain available after extension updates.
+
 ### Icons
 
 - `mK Product Icons`: product icon theme derived from Fluent Icons.
@@ -75,6 +82,9 @@ Open the command palette and use:
 - `mK Theme: Select Code Theme`
 - `mK Theme: Import Code Theme from Marketplace`
 - `mK Theme: Delete User Code Themes`
+- `mK Theme: Select Highlight Color`
+- `mK Theme: Manage Custom Highlight Colors`
+- `mK Theme: Delete User Highlight Colors`
 - `Preferences: Product Icon Theme` -> `mK Product Icons`
 - `Preferences: File Icon Theme` -> `mK File Icons`
 
@@ -193,10 +203,20 @@ Imported user code themes are stored in this extension's VS Code global storage
 directory under `codeThemes`. They are intentionally not stored in the extension
 install directory, so extension updates do not remove them.
 
+User highlight colors are stored in this extension's VS Code global storage
+directory under `highlightColors`. Built-in system highlight colors are provided
+by the extension, while user highlight colors are managed separately and shown as
+a separate group in highlight color pickers.
+
 Marketplace imports download or read a VSIX, parse JSON/JSONC theme files,
 resolve theme `include` chains, and store only `tokenColors` and
 `semanticTokenColors`. Workbench colors from imported themes are ignored so the
 mK workspace theme stays consistent.
+
+Webviews are built from `src/webviews` with React and Tailwind CSS into
+`assets/webviews`. Route components receive their initial route state from the
+shared webview app, while reusable components communicate with VS Code through a
+small webview messaging service.
 
 ## Maintenance
 
