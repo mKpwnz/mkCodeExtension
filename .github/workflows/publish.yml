@@ -34,15 +34,30 @@ jobs:
               id: release
               run: |
                   BEFORE_SHA="${{ github.event.before }}"
+                  AFTER_SHA="${{ github.sha }}"
 
                   if [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
-                      RELEASE_TAG="$(git tag --merged HEAD --list 'v*.*.*' | sort -V | tail -n 1)"
-                  else
-                      RELEASE_TAG="$(git tag --merged HEAD --no-merged "$BEFORE_SHA" --list 'v*.*.*' | sort -V | tail -n 1)"
+                      echo "No previous main commit is available for release detection"
+                      exit 0
                   fi
 
-                  if [ -z "$RELEASE_TAG" ]; then
-                      echo "No release tag became reachable on main in this push"
+                  BEFORE_VERSION="$(git show "$BEFORE_SHA:package.json" | bun -p "JSON.parse(await Bun.stdin.text()).version")"
+                  AFTER_VERSION="$(git show "$AFTER_SHA:package.json" | bun -p "JSON.parse(await Bun.stdin.text()).version")"
+
+                  if [ "$BEFORE_VERSION" = "$AFTER_VERSION" ]; then
+                      echo "package.json version did not change in this push"
+                      exit 0
+                  fi
+
+                  RELEASE_TAG="v$AFTER_VERSION"
+
+                  if ! git rev-parse -q --verify "refs/tags/$RELEASE_TAG" >/dev/null; then
+                      echo "Expected release tag $RELEASE_TAG was not found"
+                      exit 0
+                  fi
+
+                  if ! git merge-base --is-ancestor "$RELEASE_TAG" "$AFTER_SHA"; then
+                      echo "Release tag $RELEASE_TAG is not reachable from main"
                       exit 0
                   fi
 
