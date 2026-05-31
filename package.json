@@ -2,7 +2,7 @@
     "name": "mk-coding-extension",
     "displayName": "mK Coding Extension",
     "description": "A bundled mK coding experience with theme, icons and more.",
-    "version": "0.1.14",
+    "version": "0.1.15",
     "publisher": "mKpwnz",
     "icon": "assets/extensionIcon.png",
     "license": "MIT",
