@@ -61,6 +61,8 @@ extension storage and remain available after extension updates.
   Rainbow.
 - `mK Better Comments`: comment tag highlighting adapted from Better Comments.
 - `mK Error Lens`: inline diagnostic highlighting adapted from Error Lens.
+- `mK Color Preview`: opt-in inline color swatches for hex, RGB/RGBA, and
+  HSL/HSLA values in any text file.
 - `mK Path Intellisense`: path completion for imports and file references
   adapted from Path Intellisense.
 - `mK Explorer Layout`: wider Explorer tree indentation and visible indent
@@ -108,6 +110,7 @@ Settings are grouped by feature in VS Code's Settings UI.
 
 - `mkIndentRainbow.includedLanguages`: languages where indentation highlighting
   should be enabled. Empty means all languages except excluded languages.
+- `mkIndentRainbow.enabled`: enable indentation highlighting.
 - `mkIndentRainbow.excludedLanguages`: languages where indentation highlighting
   should be disabled.
 - `mkIndentRainbow.ignoreErrorLanguages`: languages where indentation error
@@ -150,8 +153,15 @@ Settings are grouped by feature in VS Code's Settings UI.
 - `mkErrorLens.removeLinebreaks`: replace line breaks in diagnostic messages with
   spaces.
 
+### mK Color Preview
+
+- `mkColorPreview.enabledByDefault`: automatically show inline color swatches
+  for every opened text file. When disabled, use `mK Color Preview: Toggle Color
+  Preview for Active File` to enable previews per file until the tab closes.
+
 ### mK Path Intellisense
 
+- `mkPathIntellisense.enabled`: enable path completion suggestions.
 - `mkPathIntellisense.extensionOnImport`: include file extensions in import
   completions.
 - `mkPathIntellisense.mappings`: path aliases. Values can use
@@ -162,6 +172,8 @@ Settings are grouped by feature in VS Code's Settings UI.
 
 ### mK Commit Message Editor
 
+- `mkCommitMessageEditor.enabled`: enable commit message editor commands and
+  webviews.
 - `mkCommitMessageEditor.staticTemplate`: template inserted into the SCM input
   box.
 - `mkCommitMessageEditor.reduceEmptyLines`: collapse more than two consecutive
@@ -187,6 +199,7 @@ Settings are grouped by feature in VS Code's Settings UI.
 
 ### mK Explorer
 
+- `mkExplorer.enabled`: enable Explorer layout synchronization.
 - `mkExplorer.indent`: Explorer tree indentation in pixels.
 - `mkExplorer.renderIndentGuides`: Explorer tree indent guide visibility.
 
@@ -213,10 +226,12 @@ resolve theme `include` chains, and store only `tokenColors` and
 `semanticTokenColors`. Workbench colors from imported themes are ignored so the
 mK workspace theme stays consistent.
 
-Webviews are built from `src/webviews` with React and Tailwind CSS into
-`assets/webviews`. Route components receive their initial route state from the
-shared webview app, while reusable components communicate with VS Code through a
-small webview messaging service.
+Webviews are built from `src/webviews` with React and Tailwind CSS into ignored
+generated files under `assets/webviews`. Route components receive their initial
+route state from the shared webview app, while reusable components communicate
+with VS Code through a small webview messaging service. `bun run check`,
+`bun run build`, and `bun run package` regenerate the webview bundle when
+needed.
 
 ## Maintenance
 

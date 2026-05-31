@@ -3,6 +3,7 @@ import type * as vscode from "vscode";
 export type IndicatorStyle = "classic" | "light";
 
 export type ParsedIndentRainbowConfiguration = {
+    readonly enabled: boolean;
     readonly includedLanguages: readonly string[];
     readonly excludedLanguages: readonly string[];
     readonly ignoreErrorLanguages: readonly string[];

@@ -10,6 +10,7 @@ export function readIndentRainbowConfiguration(): ParsedIndentRainbowConfigurati
     const configuredColors = readStringArray(configuration, "colors");
 
     return {
+        enabled: configuration.get("enabled", true),
         includedLanguages: readStringArray(configuration, "includedLanguages"),
         excludedLanguages: readStringArray(configuration, "excludedLanguages"),
         ignoreErrorLanguages: readStringArray(configuration, "ignoreErrorLanguages"),

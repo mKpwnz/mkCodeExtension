@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 
 export type PathIntellisenseConfiguration = {
+    readonly enabled: boolean;
     readonly extensionOnImport: boolean;
     readonly showHiddenFiles: boolean;
     readonly autoSlashAfterDirectory: boolean;
@@ -11,6 +12,7 @@ export function readPathIntellisenseConfiguration(): PathIntellisenseConfigurati
     const configuration = vscode.workspace.getConfiguration("mkPathIntellisense");
 
     return {
+        enabled: configuration.get("enabled", true),
         extensionOnImport: configuration.get("extensionOnImport", false),
         showHiddenFiles: configuration.get("showHiddenFiles", false),
         autoSlashAfterDirectory: configuration.get("autoSlashAfterDirectory", false),

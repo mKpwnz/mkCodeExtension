@@ -23,6 +23,11 @@ export class PathCompletionProvider implements vscode.CompletionItemProvider {
 
         const rawPath = match[1];
         const configuration = this.readConfiguration();
+
+        if (!configuration.enabled) {
+            return [];
+        }
+
         const directoryPath = resolveCompletionDirectory(document, rawPath, configuration);
 
         if (!directoryPath || !existsSync(directoryPath)) {

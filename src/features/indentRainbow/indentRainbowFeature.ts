@@ -72,7 +72,10 @@ function updateActiveEditor(configuration: ParsedIndentRainbowConfiguration): vo
         return;
     }
 
-    if (!shouldDecorateLanguage(editor.document.languageId, configuration)) {
+    if (
+        !configuration.enabled ||
+        !shouldDecorateLanguage(editor.document.languageId, configuration)
+    ) {
         clearEditorDecorations(editor, decorations);
         return;
     }

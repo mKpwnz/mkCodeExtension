@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 
 export type CommitMessageConfiguration = {
+    readonly enabled: boolean;
     readonly staticTemplate: readonly string[];
     readonly reduceEmptyLines: boolean;
     readonly saveAndClose: boolean;
@@ -34,6 +35,7 @@ export function readCommitMessageConfiguration(): CommitMessageConfiguration {
     const configuration = vscode.workspace.getConfiguration("mkCommitMessageEditor");
 
     return {
+        enabled: configuration.get("enabled", true),
         staticTemplate: configuration.get("staticTemplate", [
             "feat: Short description",
             "",

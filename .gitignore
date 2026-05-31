@@ -2,5 +2,6 @@ node_modules/
 dist/
 build/
 .cache/
+assets/webviews/
 *.vsix
 *.log
