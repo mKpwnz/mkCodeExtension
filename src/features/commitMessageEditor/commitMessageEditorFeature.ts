@@ -35,8 +35,14 @@ export function activateCommitMessageEditor(context: vscode.ExtensionContext): v
 }
 
 async function openEditor(context: vscode.ExtensionContext): Promise<void> {
-    const currentMessage = await readGitCommitMessage();
     const configuration = readCommitMessageConfiguration();
+
+    if (!configuration.enabled) {
+        await showDisabledMessage("Commit Message Editor");
+        return;
+    }
+
+    const currentMessage = await readGitCommitMessage();
     const initialMessage =
         currentMessage.length > 0 ? currentMessage : configuration.staticTemplate.join("\n");
     const panel = vscode.window.createWebviewPanel(
@@ -95,14 +101,30 @@ async function openEditor(context: vscode.ExtensionContext): Promise<void> {
 
 async function loadTemplate(): Promise<void> {
     const configuration = readCommitMessageConfiguration();
+
+    if (!configuration.enabled) {
+        await showDisabledMessage("Commit Message Editor");
+        return;
+    }
+
     await writeGitCommitMessage(configuration.staticTemplate.join("\n"));
 }
 
 async function copyFromScmInputBox(): Promise<void> {
+    if (!readCommitMessageConfiguration().enabled) {
+        await showDisabledMessage("Commit Message Editor");
+        return;
+    }
+
     await copyText(await readGitCommitMessage());
 }
 
 async function generateWithCodexToScmInputBox(): Promise<void> {
+    if (!readCommitMessageConfiguration().enabled) {
+        await showDisabledMessage("Commit Message Editor");
+        return;
+    }
+
     try {
         const message = await generateWithProgress();
         await applyGeneratedCommitMessage(message);
@@ -124,6 +146,10 @@ async function generateWithCodexToWebview(panel: vscode.WebviewPanel): Promise<v
 
 async function generateWithProgress(): Promise<string> {
     const configuration = readCommitMessageConfiguration();
+
+    if (!configuration.enabled) {
+        throw new Error("Enable Commit Message Editor in the settings first.");
+    }
 
     if (!configuration.codexGenerationEnabled) {
         throw new Error("Enable Codex commit message generation in the settings first.");
@@ -167,7 +193,11 @@ async function postToOpenCommitMessageEditors(message: {
 function syncBuiltInCommitMessageGeneration(): void {
     const configuration = readCommitMessageConfiguration();
 
-    if (!configuration.codexGenerationEnabled || !configuration.hideBuiltInGenerateButton) {
+    if (
+        !configuration.enabled ||
+        !configuration.codexGenerationEnabled ||
+        !configuration.hideBuiltInGenerateButton
+    ) {
         return;
     }
 
@@ -190,4 +220,8 @@ async function disableCopilotForScmInput(): Promise<void> {
         },
         vscode.ConfigurationTarget.Global,
     );
+}
+
+async function showDisabledMessage(name: string): Promise<void> {
+    await vscode.window.showInformationMessage(`${name} is disabled in the settings.`);
 }

@@ -17,6 +17,10 @@ async function applyExplorerLayout(): Promise<void> {
     const configuration = readExplorerLayoutConfiguration();
     const workbenchConfiguration = vscode.workspace.getConfiguration("workbench");
 
+    if (!configuration.enabled) {
+        return;
+    }
+
     await updateIfChanged(workbenchConfiguration, "tree.indent", configuration.indent);
     await updateIfChanged(
         workbenchConfiguration,

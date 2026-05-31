@@ -111,6 +111,12 @@
                 "category": "mK Error Lens"
             },
             {
+                "command": "mkColorPreview.toggleActiveEditor",
+                "title": "Toggle Color Preview for Active File",
+                "category": "mK Color Preview",
+                "icon": "$(symbol-color)"
+            },
+            {
                 "command": "mkCommitMessageEditor.openEditor",
                 "title": "Open Commit Message Editor",
                 "category": "mK Commit Message Editor",
@@ -134,16 +140,23 @@
             }
         ],
         "menus": {
+            "editor/title": [
+                {
+                    "command": "mkColorPreview.toggleActiveEditor",
+                    "group": "navigation@20",
+                    "when": "editorTextFocus"
+                }
+            ],
             "scm/title": [
                 {
                     "command": "mkCommitMessageEditor.openEditor",
                     "group": "navigation@1",
-                    "when": "scmProvider == git"
+                    "when": "scmProvider == git && config.mkCommitMessageEditor.enabled"
                 },
                 {
                     "command": "mkCommitMessageEditor.generateWithCodex",
                     "group": "navigation@2",
-                    "when": "scmProvider == git && config.mkCommitMessageEditor.codexGenerationEnabled"
+                    "when": "scmProvider == git && config.mkCommitMessageEditor.enabled && config.mkCommitMessageEditor.codexGenerationEnabled"
                 }
             ]
         },
@@ -226,9 +239,15 @@
                 "type": "object",
                 "title": "mK Indent Rainbow",
                 "properties": {
+                    "mkIndentRainbow.enabled": {
+                        "type": "boolean",
+                        "order": 10,
+                        "default": true,
+                        "description": "Enable mK Indent Rainbow highlighting."
+                    },
                     "mkIndentRainbow.includedLanguages": {
                         "type": "array",
-                        "order": 10,
+                        "order": 11,
                         "items": {
                             "type": "string"
                         },
@@ -237,7 +256,7 @@
                     },
                     "mkIndentRainbow.excludedLanguages": {
                         "type": "array",
-                        "order": 11,
+                        "order": 12,
                         "items": {
                             "type": "string"
                         },
@@ -248,7 +267,7 @@
                     },
                     "mkIndentRainbow.ignoreErrorLanguages": {
                         "type": "array",
-                        "order": 12,
+                        "order": 13,
                         "items": {
                             "type": "string"
                         },
@@ -259,7 +278,7 @@
                     },
                     "mkIndentRainbow.updateDelay": {
                         "type": "integer",
-                        "order": 13,
+                        "order": 14,
                         "default": 100,
                         "minimum": 0,
                         "maximum": 2000,
@@ -267,19 +286,19 @@
                     },
                     "mkIndentRainbow.errorColor": {
                         "type": "string",
-                        "order": 14,
+                        "order": 15,
                         "default": "rgba(188,63,60,0.38)",
                         "description": "Decoration color for indentation errors."
                     },
                     "mkIndentRainbow.tabmixColor": {
                         "type": "string",
-                        "order": 15,
+                        "order": 16,
                         "default": "rgba(214,116,185,0.32)",
                         "description": "Decoration color for mixed tabs and spaces. Empty disables this decoration."
                     },
                     "mkIndentRainbow.ignoreLinePatterns": {
                         "type": "array",
-                        "order": 16,
+                        "order": 17,
                         "items": {
                             "type": "string"
                         },
@@ -291,7 +310,7 @@
                     },
                     "mkIndentRainbow.colors": {
                         "type": "array",
-                        "order": 17,
+                        "order": 18,
                         "items": {
                             "type": "string"
                         },
@@ -305,13 +324,13 @@
                     },
                     "mkIndentRainbow.colorOnWhiteSpaceOnly": {
                         "type": "boolean",
-                        "order": 18,
+                        "order": 19,
                         "default": false,
                         "description": "Only color actual whitespace when an indent segment is incomplete."
                     },
                     "mkIndentRainbow.indicatorStyle": {
                         "type": "string",
-                        "order": 19,
+                        "order": 20,
                         "default": "classic",
                         "enum": [
                             "classic",
@@ -321,7 +340,7 @@
                     },
                     "mkIndentRainbow.lightIndicatorStyleLineWidth": {
                         "type": "number",
-                        "order": 20,
+                        "order": 21,
                         "default": 1,
                         "minimum": 1,
                         "maximum": 8,
@@ -329,7 +348,7 @@
                     },
                     "mkIndentRainbow.maxLineCount": {
                         "type": "integer",
-                        "order": 21,
+                        "order": 22,
                         "default": 20000,
                         "minimum": 100,
                         "maximum": 100000,
@@ -487,17 +506,35 @@
             },
             {
                 "type": "object",
-                "title": "mK Path Intellisense",
+                "title": "mK Color Preview",
                 "properties": {
-                    "mkPathIntellisense.extensionOnImport": {
+                    "mkColorPreview.enabledByDefault": {
                         "type": "boolean",
                         "order": 50,
+                        "default": false,
+                        "description": "Automatically show inline color swatches for every opened text file."
+                    }
+                }
+            },
+            {
+                "type": "object",
+                "title": "mK Path Intellisense",
+                "properties": {
+                    "mkPathIntellisense.enabled": {
+                        "type": "boolean",
+                        "order": 55,
+                        "default": true,
+                        "description": "Enable mK Path Intellisense completions."
+                    },
+                    "mkPathIntellisense.extensionOnImport": {
+                        "type": "boolean",
+                        "order": 56,
                         "default": false,
                         "description": "Include file extensions in import completions."
                     },
                     "mkPathIntellisense.mappings": {
                         "type": "object",
-                        "order": 51,
+                        "order": 57,
                         "default": {
                             "@": "${workspaceFolder}/src"
                         },
@@ -505,13 +542,13 @@
                     },
                     "mkPathIntellisense.showHiddenFiles": {
                         "type": "boolean",
-                        "order": 52,
+                        "order": 58,
                         "default": false,
                         "description": "Show hidden files in path completions."
                     },
                     "mkPathIntellisense.autoSlashAfterDirectory": {
                         "type": "boolean",
-                        "order": 53,
+                        "order": 59,
                         "default": false,
                         "description": "Insert a trailing slash after directory completions."
                     }
@@ -521,9 +558,15 @@
                 "type": "object",
                 "title": "mK Commit Message Editor",
                 "properties": {
+                    "mkCommitMessageEditor.enabled": {
+                        "type": "boolean",
+                        "order": 60,
+                        "default": true,
+                        "description": "Enable mK Commit Message Editor commands and webviews."
+                    },
                     "mkCommitMessageEditor.staticTemplate": {
                         "type": "array",
-                        "order": 60,
+                        "order": 61,
                         "items": {
                             "type": "string"
                         },
@@ -538,13 +581,13 @@
                     },
                     "mkCommitMessageEditor.reduceEmptyLines": {
                         "type": "boolean",
-                        "order": 61,
+                        "order": 62,
                         "default": true,
                         "description": "Collapse more than two consecutive empty lines."
                     },
                     "mkCommitMessageEditor.saveAndClose": {
                         "type": "boolean",
-                        "order": 62,
+                        "order": 63,
                         "default": false,
                         "description": "Close the editor webview after saving to the SCM input box."
                     }
@@ -556,19 +599,19 @@
                 "properties": {
                     "mkCommitMessageEditor.codexGenerationEnabled": {
                         "type": "boolean",
-                        "order": 63,
+                        "order": 64,
                         "default": true,
                         "description": "Show commit message generation actions powered by the local Codex CLI."
                     },
                     "mkCommitMessageEditor.codexModel": {
                         "type": "string",
-                        "order": 64,
+                        "order": 65,
                         "default": "gpt-5.5",
                         "description": "Model passed to the local Codex CLI when generating commit messages."
                     },
                     "mkCommitMessageEditor.codexReasoningEffort": {
                         "type": "string",
-                        "order": 65,
+                        "order": 66,
                         "default": "low",
                         "enum": [
                             "low",
@@ -579,19 +622,19 @@
                     },
                     "mkCommitMessageEditor.codexCommand": {
                         "type": "string",
-                        "order": 66,
+                        "order": 67,
                         "default": "codex",
                         "description": "Command or full path used to run the local Codex CLI."
                     },
                     "mkCommitMessageEditor.hideBuiltInGenerateButton": {
                         "type": "boolean",
-                        "order": 67,
+                        "order": 68,
                         "default": true,
                         "description": "Disable Copilot for the SCM input language when Codex commit message generation is enabled."
                     },
                     "mkCommitMessageEditor.codexTimeoutSeconds": {
                         "type": "integer",
-                        "order": 68,
+                        "order": 69,
                         "default": 120,
                         "minimum": 1,
                         "maximum": 600,
@@ -599,7 +642,7 @@
                     },
                     "mkCommitMessageEditor.codexPrompt": {
                         "type": "string",
-                        "order": 69,
+                        "order": 70,
                         "default": "Generate a clear Git commit message for the following diff.\nReturn only the commit message text. Do not use Markdown fences or explanations.\nUse this structure:\n1. First line: a Conventional Commit title under 72 characters that names the most important concrete change.\n2. Blank line.\n3. Body: 2-4 short dash-list items, each under 90 characters.\nEach list item must describe one concrete changed file, setting, behavior, or removed code.\nKeep the total message concise; prefer specific nouns over vague summary words.\nAvoid titles based on cleanup, formatting, updates, changes, or tweaks unless that is the primary change.\n\nDiff:\n{diff}",
                         "markdownDescription": "Prompt template passed to the local Codex CLI. Use `{diff}` as placeholder for the staged or unstaged Git diff."
                     }
@@ -609,9 +652,15 @@
                 "type": "object",
                 "title": "mK Explorer",
                 "properties": {
+                    "mkExplorer.enabled": {
+                        "type": "boolean",
+                        "order": 75,
+                        "default": true,
+                        "description": "Enable mK Explorer layout synchronization."
+                    },
                     "mkExplorer.indent": {
                         "type": "integer",
-                        "order": 70,
+                        "order": 76,
                         "default": 16,
                         "minimum": 4,
                         "maximum": 40,
@@ -619,7 +668,7 @@
                     },
                     "mkExplorer.renderIndentGuides": {
                         "type": "string",
-                        "order": 71,
+                        "order": 77,
                         "default": "always",
                         "enum": [
                             "none",
@@ -635,7 +684,7 @@
     "scripts": {
         "icon:generate": "bun tools/generateExtensionIcon.ts",
         "build": "bun run webviews:build && bunx tsc -p tsconfig.json && bunx tsc-alias -p tsconfig.json",
-        "check": "bun run typecheck && bun run typecheck:webviews && bun run typecheck:tools && bun run format && bun run lint && bun run validate",
+        "check": "bun run webviews:build && bun run typecheck && bun run typecheck:webviews && bun run typecheck:tools && bun run format && bun run lint && bun run validate",
         "typecheck": "bunx tsc --noEmit -p tsconfig.json",
         "typecheck:webviews": "bunx tsc --noEmit -p src/webviews/tsconfig.json",
         "typecheck:tools": "bunx tsc --noEmit -p tsconfig.scripts.json",
@@ -652,7 +701,7 @@
         "import:fluent": "bun tools/importFluentIcons.ts",
         "import:material": "bun tools/importMaterialIcons.ts",
         "import:all": "bun run import:code-themes && bun run import:fluent && bun run import:material",
-        "package": "bun tools/packageExtension.ts",
+        "package": "bun run build && bun tools/packageExtension.ts",
         "publish": "bunx @vscode/vsce publish",
         "prepare": "husky"
     },
